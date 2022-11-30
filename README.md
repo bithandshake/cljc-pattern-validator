@@ -1,12 +1,12 @@
 
-# pattern.api
+# pattern-api
 
 ...
 
 ### Overview
 
-Pattern.api is a simple Clojure/ClojureScript tool which helps you to check and
-validate the values of a map.
+The <strong>pattern-api</strong> is a simple Clojure/ClojureScript tool which
+helps you to check and validate every kind of data in your application.
 
 ### deps.edn
 
@@ -21,8 +21,8 @@ Check out the latest commit on the [release branch](https://github.com/bithandsh
 
 ### Documentation
 
-The <strong>pattern.api</strong> documentation is [available here](documentation/COVER.md).
+The <strong>pattern-api</strong> documentation is [available here](documentation/COVER.md).
 
 ### Changelog
 
-You can track the changes of the <strong>pattern.api</strong> library [here](CHANGES.md).
+You can track the changes of the <strong>pattern-api</strong> library [here](CHANGES.md).

@@ -1,0 +1,4 @@
+
+{:paths ["source-code/cljc"]
+ :deps  {bithandshake/cljc-fruits  {:git/url "https://github.com/bithandshake/cljc-fruits"
+                                    :sha     "96ee5ef5415cc0c63ca66dede737ddd2a77e1f66"}}}

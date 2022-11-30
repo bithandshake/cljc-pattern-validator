@@ -6,6 +6,6 @@
 ;; ----------------------------------------------------------------------------
 
 ; pattern.core
-(def reg      core/reg)
+(def reg!     core/reg!)
 (def valid?   core/valid?)
 (def invalid? core/invalid?)

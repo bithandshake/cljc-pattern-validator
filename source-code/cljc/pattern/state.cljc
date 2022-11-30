@@ -6,3 +6,6 @@
 
 ; @atom (map)
 (def PATTERNS (atom {}))
+
+; @atom (boolean)
+(def IGNORED? (atom false))
