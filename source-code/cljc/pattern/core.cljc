@@ -1,7 +1,6 @@
 
 (ns pattern.core
-    (:require [pattern.state :as state]
-              [string.api    :as string]))
+    (:require [pattern.state :as state]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -162,8 +161,12 @@
           (p> [] (if (map? pattern*) pattern* (get @state/PATTERNS pattern*)))
 
           ; Joins together the parts of the error message
-          (e> [e x] (-> e (string/prefix prefix* " ")
-                          (string/use-replacement x {:ignore? false})))
+          (e> [e x] (println)
+                    (println (str "validation failed on value:\n" x))
+                    (println (str "validation failed in data:\n"  n))
+                    (println)
+                    (if prefix* (str prefix* " " e)
+                                (str             e)))
 
           ; Throws an error
           (t> [e x]
@@ -173,6 +176,9 @@
           ; Returns true if the validator has not been turned off
           (e? [] (not @state/IGNORED?))
 
+          ; Returns back with the given value if it is a function, throws an error if it is not.
+          (c? [f*] (if (fn? f*) f* (t> :testing-method-must-be-a-function)))
+
           ; Returns true if the key is not optional or not replaced by another key,
           ; and it's value is nil, ...
           (req? [x {:keys [opt* rep*]}]
@@ -180,7 +186,11 @@
                      (not (and rep* (some #(% n) rep*)))
                      (-> x nil?)))
 
-          ; Returns true if at least on function in the and* vector does not return with false, ...
+          ; Returns true if the is optional and it's is nil
+          (opt? [x {:keys [opt*]}]
+                (and opt* (nil? x)))
+
+          ; Returns true if at least one function in the and* vector does not return with false, ...
           (and? [x {:keys [and*]}]
                 (and and* (some #(-> x % not) and*)))
 
@@ -211,7 +221,8 @@
 
           ; Runs all kind of tests on the passed x
           (t? [x {:keys [ign* e*] :as test*}]
-              (cond ign* :validation-skipped
+              (cond ign*            :validation-skipped
+                    (opt?  x test*) :optional-and-not-passed
                     (req?  x test*) (t> e* x)
                     (and?  x test*) (t> e* x)
                     (f?    x test*) (t> e* x)
@@ -255,10 +266,8 @@
                                      (s?)))           ; <- After the validation and only in strict* mode, searching for extra keys in the map
                             (or (not  test*)
                                 (t? n test*)))
-                       #?(:clj  (catch Exception e (if explain* (do (-> n         println)
-                                                                    (-> e         println))))
-                          :cljs (catch :default  e (if explain* (do (-> n         println)
-                                                                    (-> e .-stack println)))))))))
+                       #?(:clj  (catch Exception e (if explain* (do (-> e         println))))
+                          :cljs (catch :default  e (if explain* (do (-> e .-stack println)))))))))
 
 (defn invalid?
   ; @param (*) n
