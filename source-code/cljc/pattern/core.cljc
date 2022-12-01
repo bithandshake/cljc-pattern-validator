@@ -165,13 +165,13 @@
           (e> [e x] (-> e (string/prefix prefix* " ")
                           (string/use-replacement x {:ignore? false})))
 
-          ; Throwing an error
+          ; Throws an error
           (t> [e x]
               #?(:clj  (throw (Exception. (e> e x)))
                  :cljs (throw (js/Error.  (e> e x)))))
 
           ; Returns true if the validator has not been turned off
-          (i? [] (not @state/IGNORED?))
+          (e? [] (not @state/IGNORED?))
 
           ; Returns true if the key is not optional or not replaced by another key,
           ; and it's value is nil, ...
@@ -222,8 +222,8 @@
                     :else :key-passed-all-of-the-tests))
 
           ; Takes a key and a test* from the pattern and passes the value (get by the key)
-          ; and the taken test to the testing function (t?)
-          (v? [[k test*]]
+          ; and the taken test* to the testing function (t?)
+          (v? [[k test* :as x]]
               (t? (k n) test*))
 
           ; Strict-matching only happens in strict* mode!
@@ -247,12 +247,12 @@
                      ; The println skipped (it returns nil), and throwing an error
                      (t> :invalid-pattern nil)))]
 
-         (boolean (try (and (i?) ; <- Checking the validator state
+         (boolean (try (and (e?) ; <- Checking the validator state
                             (or (not pattern*)
-                                (m?)             ; <- Type-checking the n (before the pattern* is getting processed)
-                                (p?)             ; <- Type-checking the pattern* (before it's getting processed)
-                                (every? v? (p>)) ; <- Validating the n with every key of the pattern*
-                                (s?))            ; <- After the validation and only in strict* mode, searching for extra keys in the map
+                                (and (m?)             ; <- Type-checking the n (before the pattern* is getting processed)
+                                     (p?)             ; <- Type-checking the pattern* (before it's getting processed)
+                                     (every? v? (p>)) ; <- Validating the n with every key of the pattern*
+                                     (s?)))           ; <- After the validation and only in strict* mode, searching for extra keys in the map
                             (or (not  test*)
                                 (t? n test*)))
                        #?(:clj  (catch Exception e (if explain* (do (-> n         println)
