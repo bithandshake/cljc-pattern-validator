@@ -1,10 +1,12 @@
 
 # <strong>pattern-api</strong>
+
 <p>Documentation of the <strong>pattern-api</strong> Clojure / ClojureScript library</p>
 
 <strong>[README](../README.md) > DOCUMENTATION</strong>
 
 ### Public namespaces
+
 * [pattern.api](cljc/pattern/API.md) [cljc]
 
 ---

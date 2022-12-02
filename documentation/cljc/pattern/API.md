@@ -1,10 +1,39 @@
 
 # <strong>pattern.api</strong> namespace
-<p>Documentation of the <strong>pattern/api.cljc</strong> file</p>
 
-<strong>[README](../../../README.md) > [DOCUMENTATION](../../COVER.md) > pattern.api</strong>
+<strong>[README](../../../README.md) > [DOCUMENTATION](../../COVER.md) > </strong>source-code/cljc/pattern/api.cljc
 
+### ignore!
 
+```
+@usage
+(ignore!)
+```
+
+<details>
+<summary>Source code</summary>
+
+```
+(defn ignore!
+  []
+  (reset! state/IGNORED? true))
+```
+
+</details>
+
+<details>
+<summary>Require</summary>
+
+```
+(ns my-namespace (:require [pattern.api :refer [ignore!]]))
+
+(pattern.api/ignore!)
+(ignore!)
+```
+
+</details>
+
+---
 
 ### invalid?
 
@@ -23,7 +52,11 @@
       The function has to be returns with true.
      :ign* (function)(opt)
       If this function returns with true, the value will be ignored.
-     :not* (functions in vector)(opt)
+     :nand* (functions in vector)(opt)
+      At least of the functions in this vector has to be returns with false.
+     :not* (function)(opt)
+      The function has to be returns with false.
+     :nor* (functions in vector)(opt)
       All of the functions in this vector has to be returns with false.
      :opt* (boolean)(opt)
       If this set to true, the value will be handled as optional.
@@ -31,12 +64,25 @@
       At least one of the functions in this vector has to be returns with true.
      :rep* (vector)(opt)
       If the tested key does not exist in the map, at least one of
-      the keys in this vector has to be in the n map.}}
+      the keys in this vector has to be in the n map.
+     :xor* (functions in vector)(opt)
+      At most one of the functions in this vector can returns with true.}}
  :prefix* (string)(opt)
   The :prefix* will be prepend to the value of :e* when an expection occurs.
+ :test* (map)(opt)
+  {:and* (functions in vector)(opt)
+   :e* (string)
+   :ign* (boolean)(opt)
+   :nand* (functions in vector)(opt)
+   :nor* (functions in vector)(opt)
+   :not* (function)(opt)
+   :opt* (boolean)(opt)
+   :or* (functions in vector)(opt)
+   :xor* (functions in vector)(opt)}
  :strict* (boolean)(opt)
   If this set to true, other keys than passed in the pattern will be not allowed!
-  Default: false}
+  Default: false
+  W/ {:pattern* ...}}
 ```
 
 ```
@@ -117,10 +163,10 @@ false
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [pattern.api :as pattern :refer [invalid?]]))
+(ns my-namespace (:require [pattern.api :refer [invalid?]]))
 
-(pattern/invalid? ...)
-(invalid?         ...)
+(pattern.api/invalid? ...)
+(invalid?             ...)
 ```
 
 </details>
@@ -141,7 +187,11 @@ false
     The function has to be returns with true.
    :ign* (function)(opt)
     If this function returns with true, the value will be ignored.
-   :not* (functions in vector)(opt)
+   :nand* (functions in vector)(opt)
+    At least of the functions in this vector has to be returns with false.
+   :not* (function)(opt)
+    The function has to be returns with false.
+   :nor* (functions in vector)(opt)
     All of the functions in this vector has to be returns with false.
    :opt* (boolean)(opt)
     If this set to true, the value will be handled as optional.
@@ -149,7 +199,9 @@ false
     At least one of the functions in this vector has to be returns with true.
    :rep* (vector)(opt)
     If the tested key does not exist in the map, at least one of
-    the keys in this vector has to be in the n map.}}
+    the keys in this vector has to be in the n map.
+   :xor* (functions in vector)(opt)
+    At most one of the functions in this vector can returns with true.}}
 ```
 
 ```
@@ -178,10 +230,10 @@ false
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [pattern.api :as pattern :refer [reg!]]))
+(ns my-namespace (:require [pattern.api :refer [reg!]]))
 
-(pattern/reg! ...)
-(reg!         ...)
+(pattern.api/reg! ...)
+(reg!             ...)
 ```
 
 </details>
@@ -205,7 +257,11 @@ false
       The function has to be returns with true.
      :ign* (function)(opt)
       If this function returns with true, the value will be ignored.
-     :not* (functions in vector)(opt)
+     :nand* (functions in vector)(opt)
+      At least of the functions in this vector has to be returns with false.
+     :not* (function)(opt)
+      The function has to be returns with false.
+     :nor* (functions in vector)(opt)
       All of the functions in this vector has to be returns with false.
      :opt* (boolean)(opt)
       If this set to true, the value will be handled as optional.
@@ -213,16 +269,21 @@ false
       At least one of the functions in this vector has to be returns with true.
      :rep* (vector)(opt)
       If the tested key does not exist in the map, at least one of
-      the keys in this vector has to be in the n map.}}
+      the keys in this vector has to be in the n map.
+     :xor* (functions in vector)(opt)
+      At most one of the functions in this vector can returns with true.}}
  :prefix* (string)(opt)
   The :prefix* will be prepend to the value of :e* when an expection occurs.
  :test* (map)(opt)
   {:and* (functions in vector)(opt)
    :e* (string)
    :ign* (boolean)(opt)
-   :not* (functions in vector)(opt)
+   :nand* (functions in vector)(opt)
+   :nor* (functions in vector)(opt)
+   :not* (function)(opt)
    :opt* (boolean)(opt)
-   :or* (functions in vector)(opt)}
+   :or* (functions in vector)(opt)
+   :xor* (functions in vector)(opt)}
  :strict* (boolean)(opt)
   If this set to true, other keys than passed in the pattern will be not allowed!
   Default: false
@@ -307,33 +368,89 @@ true
 ```
 (defn valid?
   [n {:keys [explain* pattern* prefix* strict* test*] :or {explain* true}}]
-  (letfn [(p> [] (if (map? pattern*) pattern* (get @state/PATTERNS pattern*)))
-          (e> [e x] (-> e (string/prefix prefix* " ")
-                          (string/use-replacement x {:ignore? false})))
-          (t> [e x]              #?(:clj  (throw (Exception. (e> e x)))
+  (letfn [
+          (p> [] (if (map? pattern*) pattern* (get @state/PATTERNS pattern*)))
+
+          (e> [e x] (println)
+                    (println (str "validation failed on value:\n" x))
+                    (println (str "validation failed in data:\n"  n))
+                    (println)
+                    (if prefix* (str prefix* " " e)
+                                (str             e)))
+
+          (t> [e x]
+              #?(:clj  (throw (Exception. (e> e x)))
                  :cljs (throw (js/Error.  (e> e x)))))
-          (i? [] (not @state/IGNORED?))          (t? [x {:keys [and* e* f* ign* not* opt* or* rep*]}]
-              (cond ign*                    :validation-skipped
-                    (and (not opt*)                         (not (and rep* (some #(% n) rep*)))                         (-> x nil?))                    (t>  e* x)
-                    (and not* (some #(-> x %) not*))                    (t>  e* x)
-                    (and f* (-> x f* not))                    (t>  e* x)
-                    (and and* (some #(-> x % not) and*))                    (t>  e* x)
-                    (and or*  (not (some #(-> x %) or*)))                    (t>  e* x)
+
+          (e? [] (not @state/IGNORED?))
+
+          (c? [f*] (if (fn? f*) f* (t> :testing-method-must-be-a-function)))
+
+          (req? [x {:keys [opt* rep*]}]
+                (and (not opt*)
+                     (not (and rep* (some #(% n) rep*)))
+                     (-> x nil?)))
+
+          (opt? [x {:keys [opt*]}]
+                (and opt* (nil? x)))
+
+          (and? [x {:keys [and*]}]
+                (and and* (some #(-> x % not) and*)))
+
+          (f? [x {:keys [f*]}]
+              (and f* (-> x f* not)))
+
+          (nand? [x {:keys [nand*]}]
+                 (and nand* (every? #(-> x %) nand*)))
+
+          (nor? [x {:keys [nor*]}]
+                (and nor* (some #(-> x %) nor*)))
+
+          (not? [x {:keys [not*]}]
+                (and not* (not* x)))
+
+          (or? [x {:keys [or*]}]
+               (and or* (not (some #(-> x %) or*))))
+
+          (xor? [x {:keys [xor*]}]
+                (letfn [(f [r %] (if (% x) (inc r) r))]
+                       (not= 1 (reduce f 0 xor*))))
+
+          (t? [x {:keys [ign* e*] :as test*}]
+              (cond ign*            :validation-skipped
+                    (opt?  x test*) :optional-and-not-passed
+                    (req?  x test*) (t> e* x)
+                    (and?  x test*) (t> e* x)
+                    (f?    x test*) (t> e* x)
+                    (nand? x test*) (t> e* x)
+                    (nor?  x test*) (t> e* x)
+                    (not?  x test*) (t> e* x)
+                    (or?   x test*) (t> e* x)
                     :else :key-passed-all-of-the-tests))
-          (v? [[k test*]]
+
+          (v? [[k test* :as x]]
               (t? (k n) test*))
-          (s? [] (or (not strict*)                     (= (keys  n)
+
+          (s? [] (or (not strict*)
+                     (= (keys  n)
                         (keys (p>)))
-                     (t> :strict-matching-failed nil)))          (m? [] (or (map? n)                     (when explain* (println "Expected a map but got:" (-> n type)))
-                     (t> :invalid-value nil)))          (p? [] (or (map?     pattern*)                     (keyword? pattern*)                     (when explain* (println "Expected a keyword type pattern-id or a map type pattern but got:" (-> pattern* type))
+                     (t> :strict-matching-failed nil)))
+
+          (m? [] (or (map? n)
+                     (when explain* (println "Expected a map but got:" (-> n type)))
+                     (t> :invalid-value nil)))
+
+          (p? [] (or (map?     pattern*)
+                     (keyword? pattern*)
+                     (when explain* (println "Expected a keyword type pattern-id or a map type pattern but got:" (-> pattern* type))
                                     (println pattern*))
-                     (t> :invalid-pattern nil)))]         (boolean (try (and (i?)                            (or (not pattern*)
-                                (m?)                                (p?)                                (every? v? (p>))                                (s?))                            (or (not  test*)
+                     (t> :invalid-pattern nil)))]
+
+         (boolean (try (and (e?)                            (or (not pattern*)
+                                (and (m?)                                     (p?)                                     (every? v? (p>))                                     (s?)))                            (or (not  test*)
                                 (t? n test*)))
-                       #?(:clj  (catch Exception e (if explain* (do (-> n         println)
-                                                                    (-> e         println))))
-                          :cljs (catch :default  e (if explain* (do (-> n         println)
-                                                                    (-> e .-stack println)))))))))
+                       #?(:clj  (catch Exception e (if explain* (do (-> e         println))))
+                          :cljs (catch :default  e (if explain* (do (-> e .-stack println)))))))))
 ```
 
 </details>
@@ -342,10 +459,10 @@ true
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [pattern.api :as pattern :refer [valid?]]))
+(ns my-namespace (:require [pattern.api :refer [valid?]]))
 
-(pattern/valid? ...)
-(valid?         ...)
+(pattern.api/valid? ...)
+(valid?             ...)
 ```
 
 </details>
