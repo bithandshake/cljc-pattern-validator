@@ -5,7 +5,7 @@
 
 <strong>[README](../README.md) > DOCUMENTATION</strong>
 
-### Public namespaces
+### Isomorphic namespaces
 
 * [pattern.api](cljc/pattern/API.md) [cljc]
 
