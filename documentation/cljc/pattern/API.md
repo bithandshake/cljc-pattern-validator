@@ -16,6 +16,12 @@
 ### ignore!
 
 ```
+@description
+Turns off the validating.
+After using it, the validating functions will return as in case with a valid data.
+```
+
+```
 @usage
 (ignore!)
 ```
@@ -48,6 +54,11 @@
 ### invalid?
 
 ```
+@description
+Checks whether the given data is invalid or not.
+```
+
+```
 @param (*) n
 @param (map) options
 {:explain* (boolean)(opt)
@@ -55,23 +66,23 @@
  :pattern* (map)
   {:my-key (map)
     {:and* (functions in vector)(opt)
-      All of the functions in this vector has to be returns with true.
+      All of the functions in this vector has to return with true.
      :e* (string)
       The error message.
      :f* (function)(opt)
-      The function has to be returns with true.
+      The function has to return with true.
      :ign* (function)(opt)
       If this function returns with true, the value will be ignored.
      :nand* (functions in vector)(opt)
-      At least of the functions in this vector has to be returns with false.
+      At least of the functions in this vector has to return with false.
      :not* (function)(opt)
-      The function has to be returns with false.
+      The function has to return with false.
      :nor* (functions in vector)(opt)
-      All of the functions in this vector has to be returns with false.
+      All of the functions in this vector has to return with false.
      :opt* (boolean)(opt)
       If this set to true, the value will be handled as optional.
      :or* (functions in vector)(opt)
-      At least one of the functions in this vector has to be returns with true.
+      At least one of the functions in this vector has to return with true.
      :rep* (vector)(opt)
       If the tested key does not exist in the map, at least one of
       the keys in this vector has to be in the n map.
@@ -186,27 +197,32 @@ false
 ### reg!
 
 ```
+@description
+Registers a reusable pattern with id.
+```
+
+```
 @param (keyword) pattern-id
 @param (map) pattern
 {:my-key (map)
   {:and* (functions in vector)(opt)
-    All of the functions in this vector has to be returns with true.
+    All of the functions in this vector has to return with true.
    :e* (string)
     The error message.
    :f* (function)(opt)
-    The function has to be returns with true.
+    The function has to be return with true.
    :ign* (function)(opt)
     If this function returns with true, the value will be ignored.
    :nand* (functions in vector)(opt)
-    At least of the functions in this vector has to be returns with false.
+    At least of the functions in this vector has to return with false.
    :not* (function)(opt)
-    The function has to be returns with false.
+    The function has to be return with false.
    :nor* (functions in vector)(opt)
-    All of the functions in this vector has to be returns with false.
+    All of the functions in this vector has to return with false.
    :opt* (boolean)(opt)
     If this set to true, the value will be handled as optional.
    :or* (functions in vector)(opt)
-    At least one of the functions in this vector has to be returns with true.
+    At least one of the functions in this vector has to return with true.
    :rep* (vector)(opt)
     If the tested key does not exist in the map, at least one of
     the keys in this vector has to be in the n map.
@@ -222,7 +238,7 @@ false
 ```
 @usage
 (reg! :my-pattern {:a {:f* string?
-                      :e* ":a must be a string!"}})
+                       :e* ":a must be a string!"}})
 ```
 
 <details>
@@ -253,6 +269,11 @@ false
 ### valid?
 
 ```
+@description
+Checks whether the given data is valid or not.
+```
+
+```
 @param (*) n
 @param (map) options
 {:explain* (boolean)(opt)
@@ -260,23 +281,23 @@ false
  :pattern* (map)
   {:my-key (map)
     {:and* (functions in vector)(opt)
-      All of the functions in this vector has to be returns with true.
+      All of the functions in this vector has to return with true.
      :e* (string)
       The error message.
      :f* (function)(opt)
-      The function has to be returns with true.
+      The function has to return with true.
      :ign* (function)(opt)
       If this function returns with true, the value will be ignored.
      :nand* (functions in vector)(opt)
-      At least of the functions in this vector has to be returns with false.
+      At least of the functions in this vector has to return with false.
      :not* (function)(opt)
-      The function has to be returns with false.
+      The function has to return with false.
      :nor* (functions in vector)(opt)
-      All of the functions in this vector has to be returns with false.
+      All of the functions in this vector has to return with false.
      :opt* (boolean)(opt)
       If this set to true, the value will be handled as optional.
      :or* (functions in vector)(opt)
-      At least one of the functions in this vector has to be returns with true.
+      At least one of the functions in this vector has to return with true.
      :rep* (vector)(opt)
       If the tested key does not exist in the map, at least one of
       the keys in this vector has to be in the n map.
@@ -383,6 +404,7 @@ true
 
           (e> [e x] (println)
                     (println (str "validation failed on value:\n" x))
+                    (println)
                     (println (str "validation failed in data:\n"  n))
                     (println)
                     (if prefix* (str prefix* " " e)
