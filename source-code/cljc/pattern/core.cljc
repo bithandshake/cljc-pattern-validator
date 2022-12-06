@@ -163,6 +163,7 @@
           ; Joins together the parts of the error message
           (e> [e x] (println)
                     (println (str "validation failed on value:\n" x))
+                    (println)
                     (println (str "validation failed in data:\n"  n))
                     (println)
                     (if prefix* (str prefix* " " e)
@@ -180,13 +181,13 @@
           (c? [f*] (if (fn? f*) f* (t> :testing-method-must-be-a-function)))
 
           ; Returns true if the key is not optional or not replaced by another key,
-          ; and it's value is nil, ...
+          ; and its value is nil, ...
           (req? [x {:keys [opt* rep*]}]
                 (and (not opt*)
                      (not (and rep* (some #(% n) rep*)))
                      (-> x nil?)))
 
-          ; Returns true if the is optional and it's is nil
+          ; Returns true if the is optional and its is nil
           (opt? [x {:keys [opt*]}]
                 (and opt* (nil? x)))
 
@@ -261,7 +262,7 @@
          (boolean (try (and (e?) ; <- Checking the validator state
                             (or (not pattern*)
                                 (and (m?)             ; <- Type-checking the n (before the pattern* is getting processed)
-                                     (p?)             ; <- Type-checking the pattern* (before it's getting processed)
+                                     (p?)             ; <- Type-checking the pattern* (before its getting processed)
                                      (every? v? (p>)) ; <- Validating the n with every key of the pattern*
                                      (s?)))           ; <- After the validation and only in strict* mode, searching for extra keys in the map
                             (or (not  test*)
