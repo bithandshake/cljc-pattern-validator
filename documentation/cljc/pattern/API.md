@@ -9,7 +9,9 @@
 
 - [invalid?](#invalid)
 
-- [reg!](#reg)
+- [reg-pattern!](#reg-pattern)
+
+- [reg-test!](#reg-test)
 
 - [valid?](#valid)
 
@@ -62,6 +64,7 @@ Checks whether the given data is invalid or not.
 @param (*) n
 @param (map) options
 {:explain* (boolean)(opt)
+  If set to true the error message will be printed.
   Default: true
  :pattern* (map)
   {:my-key (map)
@@ -74,13 +77,13 @@ Checks whether the given data is invalid or not.
      :ign* (function)(opt)
       If this function returns with true, the value will be ignored.
      :nand* (functions in vector)(opt)
-      At least of the functions in this vector has to return with false.
+      At least one of the functions in this vector has to return with false.
      :not* (function)(opt)
       The function has to return with false.
      :nor* (functions in vector)(opt)
       All of the functions in this vector has to return with false.
      :opt* (boolean)(opt)
-      If this set to true, the value will be handled as optional.
+      If set to true, the value will be handled as optional.
      :or* (functions in vector)(opt)
       At least one of the functions in this vector has to return with true.
      :rep* (vector)(opt)
@@ -101,7 +104,7 @@ Checks whether the given data is invalid or not.
    :or* (functions in vector)(opt)
    :xor* (functions in vector)(opt)}
  :strict* (boolean)(opt)
-  If this set to true, other keys than passed in the pattern will be not allowed!
+  If set to true, other keys than passed in the pattern will be not allowed!
   Default: false
   W/ {:pattern* ...}}
 ```
@@ -110,6 +113,15 @@ Checks whether the given data is invalid or not.
 @usage
 (invalid? {:a "A"}
           {:pattern* {:a {:f* string?}}})
+```
+
+```
+@example
+(invalid? "A"
+          {:test* {:f* string?
+                   :e* "Value must be a string!"}})
+=>
+false
 ```
 
 ```
@@ -194,7 +206,7 @@ false
 
 ---
 
-### reg!
+### reg-pattern!
 
 ```
 @description
@@ -214,13 +226,13 @@ Registers a reusable pattern with id.
    :ign* (function)(opt)
     If this function returns with true, the value will be ignored.
    :nand* (functions in vector)(opt)
-    At least of the functions in this vector has to return with false.
+    At least one of the functions in this vector has to return with false.
    :not* (function)(opt)
     The function has to be return with false.
    :nor* (functions in vector)(opt)
     All of the functions in this vector has to return with false.
    :opt* (boolean)(opt)
-    If this set to true, the value will be handled as optional.
+    If set to true, the value will be handled as optional.
    :or* (functions in vector)(opt)
     At least one of the functions in this vector has to return with true.
    :rep* (vector)(opt)
@@ -232,20 +244,20 @@ Registers a reusable pattern with id.
 
 ```
 @usage
-(reg! :my-pattern {...})
+(reg-pattern! :my-pattern {...})
 ```
 
 ```
 @usage
-(reg! :my-pattern {:a {:f* string?
-                       :e* ":a must be a string!"}})
+(reg-pattern! :my-pattern {:a {:f* string?
+                               :e* ":a must be a string!"}})
 ```
 
 <details>
 <summary>Source code</summary>
 
 ```
-(defn reg!
+(defn reg-pattern!
   [pattern-id pattern]
   (swap! state/PATTERNS assoc pattern-id pattern))
 ```
@@ -256,10 +268,74 @@ Registers a reusable pattern with id.
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [pattern.api :refer [reg!]]))
+(ns my-namespace (:require [pattern.api :refer [reg-pattern!]]))
 
-(pattern.api/reg! ...)
-(reg!             ...)
+(pattern.api/reg-pattern! ...)
+(reg-pattern!             ...)
+```
+
+</details>
+
+---
+
+### reg-test!
+
+```
+@description
+Registers a reusable test with id.
+```
+
+```
+@param (keyword) test-id
+@param (map) test
+{:and* (functions in vector)(opt)
+  All of the functions in this vector has to return with true.
+ :e* (string)
+  The error message.
+ :f* (function)(opt)
+  The function has to be return with true.
+ :nand* (functions in vector)(opt)
+  At least one of the functions in this vector has to return with false.
+ :not* (function)(opt)
+  The function has to be return with false.
+ :nor* (functions in vector)(opt)
+  All of the functions in this vector has to return with false.
+ :or* (functions in vector)(opt)
+  At least one of the functions in this vector has to return with true.
+ :xor* (functions in vector)(opt)
+  At most one of the functions in this vector can returns with true.}
+```
+
+```
+@usage
+(reg-test! :my-test {...})
+```
+
+```
+@usage
+(reg-test! :my-test {:f* string?
+                     :e* ":a must be a string!"})
+```
+
+<details>
+<summary>Source code</summary>
+
+```
+(defn reg-test!
+  [test-id test]
+  (swap! state/TESTS assoc test-id test))
+```
+
+</details>
+
+<details>
+<summary>Require</summary>
+
+```
+(ns my-namespace (:require [pattern.api :refer [reg-test!]]))
+
+(pattern.api/reg-test! ...)
+(reg-test!             ...)
 ```
 
 </details>
@@ -277,6 +353,7 @@ Checks whether the given data is valid or not.
 @param (*) n
 @param (map) options
 {:explain* (boolean)(opt)
+  If set to true the error message will be printed.
   Default: true
  :pattern* (map)
   {:my-key (map)
@@ -289,13 +366,13 @@ Checks whether the given data is valid or not.
      :ign* (function)(opt)
       If this function returns with true, the value will be ignored.
      :nand* (functions in vector)(opt)
-      At least of the functions in this vector has to return with false.
+      At least one of the functions in this vector has to return with false.
      :not* (function)(opt)
       The function has to return with false.
      :nor* (functions in vector)(opt)
       All of the functions in this vector has to return with false.
      :opt* (boolean)(opt)
-      If this set to true, the value will be handled as optional.
+      If set to true, the value will be handled as optional.
      :or* (functions in vector)(opt)
       At least one of the functions in this vector has to return with true.
      :rep* (vector)(opt)
@@ -316,7 +393,7 @@ Checks whether the given data is valid or not.
    :or* (functions in vector)(opt)
    :xor* (functions in vector)(opt)}
  :strict* (boolean)(opt)
-  If this set to true, other keys than passed in the pattern will be not allowed!
+  If set to true, other keys than passed in the pattern will be not allowed!
   Default: false
   W/ {:pattern* ...}}
 ```
@@ -325,6 +402,15 @@ Checks whether the given data is valid or not.
 @usage
 (valid? {:a "A"}
         {:pattern* {:a {:f* string?}}})
+```
+
+```
+@example
+(valid? "A"
+        {:test* {:f* string?
+                 :e* "Value must be a string!"}})
+=>
+true
 ```
 
 ```
@@ -414,7 +500,7 @@ true
               #?(:clj  (throw (Exception. (e> e x)))
                  :cljs (throw (js/Error.  (e> e x)))))
 
-          (e? [] (not @state/IGNORED?))
+          (i? [] @state/IGNORED?)
 
           (c? [f*] (if (fn? f*) f* (t> :testing-method-must-be-a-function)))
 
@@ -478,11 +564,12 @@ true
                                     (println pattern*))
                      (t> :invalid-pattern nil)))]
 
-         (boolean (try (and (e?)                            (or (not pattern*)
-                                (and (m?)                                     (p?)                                     (every? v? (p>))                                     (s?)))                            (or (not  test*)
-                                (t? n test*)))
-                       #?(:clj  (catch Exception e (if explain* (do (-> e         println))))
-                          :cljs (catch :default  e (if explain* (do (-> e .-stack println)))))))))
+         (if (i?) :validating-ignored
+                  (boolean (try (and (or (not pattern*)
+                                         (and (m?)                                              (p?)                                              (every? v? (p>))                                              (s?)))                                     (or (not  test*)
+                                         (t? n test*)))
+                                #?(:clj  (catch Exception e (if explain* (do (-> e         println))))
+                                   :cljs (catch :default  e (if explain* (do (-> e .-stack println))))))))))
 ```
 
 </details>
