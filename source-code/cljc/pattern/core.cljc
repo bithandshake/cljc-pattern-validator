@@ -152,7 +152,7 @@
           (i? [] @state/IGNORED?)
 
           ; Returns back with the given value if it is a function, throws an error if it is not.
-          (c? [f*] (if (fn? f*) f* (t> :testing-method-must-be-a-function)))
+          (c? [f*] (if (fn? f*) f* (t> :testing-method-must-be-a-function nil)))
 
           ; Returns true if the key is not optional or not replaced by another key,
           ; and its value is nil, ...
