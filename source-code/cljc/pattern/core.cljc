@@ -53,7 +53,7 @@
   ;      :xor* (functions in vector)(opt)
   ;       At most one of the functions in this vector can returns with true.}}
   ;  :prefix* (string)(opt)
-  ;   The :prefix* will be prepend to the value of :e* when an expection occurs.
+  ;   The ':prefix*' will be prepend to the value of ':e*' when an expection occurs.
   ;  :test* (map)(opt)
   ;   {:and* (functions in vector)(opt)
   ;    :e* (string)
@@ -131,10 +131,10 @@
   ; @return (boolean)
   [n {:keys [explain* pattern* prefix* strict* test*] :or {explain* true}}]
   (letfn [
-          ; Returns the pattern by itself or by the pattern-id
+          ; Returns the pattern by itself or by the 'pattern-id'.
           (p> [] (if (map? pattern*) pattern* (get @state/PATTERNS pattern*)))
 
-          ; Joins together the parts of the error message
+          ; Joins together the parts of the error message.
           (e> [e x] (println)
                     (println (str "validation failed on value:\n" x))
                     (println)
@@ -143,15 +143,15 @@
                     (if prefix* (str prefix* " " e)
                                 (str             e)))
 
-          ; Throws an error
+          ; Throws an error.
           (t> [e x]
               #?(:clj  (throw (Exception. (e> e x)))
                  :cljs (throw (js/Error.  (e> e x)))))
 
-          ; Returns true if the validator has been turned off
+          ; Returns true if the validator has been turned off.
           (i? [] @state/IGNORED?)
 
-          ; Returns back with the given value if it is a function, throws an error if it is not.
+          ; Returns back with the given value if it is a function, otherwise throws an error.
           (c? [f*] (if (fn? f*) f* (t> :testing-method-must-be-a-function nil)))
 
           ; Returns true if the key is not optional or not replaced by another key,
@@ -165,36 +165,36 @@
           (opt? [x {:keys [opt*]}]
                 (and opt* (nil? x)))
 
-          ; Returns true if at least one function in the and* vector does not return with false, ...
+          ; Returns true if at least one function in the 'and*' vector does not return with false, ...
           (and? [x {:keys [and*]}]
                 (and and* (some #(-> x % not) and*)))
 
-          ; Returns true if the f* function returns with false, ...
+          ; Returns true if the 'f*' function returns with false, ...
           (f? [x {:keys [f*]}]
               (and f* (-> x f* not)))
 
-          ; Returns true if all of the functions in the nand* vector returns with true, ...
+          ; Returns true if all of the functions in the 'nand*' vector returns with true, ...
           (nand? [x {:keys [nand*]}]
                  (and nand* (every? #(-> x %) nand*)))
 
-          ; Returns true if at least one function in the nor* vector returns with true, ...
+          ; Returns true if at least one function in the 'nor*' vector returns with true, ...
           (nor? [x {:keys [nor*]}]
                 (and nor* (some #(-> x %) nor*)))
 
-          ; Returns true if the not* function returns with true, ...
+          ; Returns true if the 'not*' function returns with true, ...
           (not? [x {:keys [not*]}]
                 (and not* (not* x)))
 
-          ; Returns true if no function in the or* vector returns with true, ...
+          ; Returns true if no function in the 'or*' vector returns with true, ...
           (or? [x {:keys [or*]}]
                (and or* (not (some #(-> x %) or*))))
 
-          ; Returns true if not only one of the functions in the xor* vector returns with true, ...
+          ; Returns true if not only one of the functions in the 'xor*' vector returns with true, ...
           (xor? [x {:keys [xor*]}]
                 (letfn [(f [r %] (if (% x) (inc r) r))]
                        (not= 1 (reduce f 0 xor*))))
 
-          ; Runs all kind of tests on the passed x
+          ; Runs all kind of tests on the passed 'x'.
           (t? [x {:keys [ign* e*] :as test*}]
               (cond ign*            :validation-skipped
                     (opt?  x test*) :optional-and-not-passed
@@ -207,38 +207,38 @@
                     (or?   x test*) (t> e* x)
                     :else :key-passed-all-of-the-tests))
 
-          ; Takes a key and a test* from the pattern and passes the value (get by the key)
-          ; and the taken test* to the testing function (t?)
+          ; Takes a key and a 'test*' from the pattern and passes the value (get by the key)
+          ; and the taken 'test*' to the testing function ('t?').
           (v? [[k test* :as x]]
               (t? (k n) test*))
 
-          ; Strict-matching only happens in strict* mode!
-          ; Throws an error if there are some extra keys in the n
+          ; Strict-matching only happens in 'strict*' mode!
+          ; Throws an error if there are some extra keys in the 'n'.
           (s? [] (or (not strict*)
                      (= (keys  n)
                         (keys (p>)))
                      (t> :strict-matching-failed nil)))
 
-          ; Throws an error if the n is not a map
+          ; Throws an error if the 'n' is not a map.
           (m? [] (or (map? n)
                      (when explain* (println "Expected a map but got:" (-> n type)))
                      ; The println skipped (it returns with nil), throwing an error
                      (t> :invalid-value nil)))
 
-          ; Throws an error if the pattern* is not a keyword or a map
+          ; Throws an error if the 'pattern*' is not a keyword or a map.
           (p? [] (or (map?     pattern*)
                      (keyword? pattern*)
                      (when explain* (println "Expected a keyword type pattern-id or a map type pattern but got:" (-> pattern* type))
                                     (println pattern*))
-                     ; The println skipped (it returns with nil), throwing an error
+                     ; The println skipped (it returns with nil), throwing an error ...
                      (t> :invalid-pattern nil)))]
 
          (if (i?) :validating-ignored
                   (boolean (try (and (or (not pattern*)
-                                         (and (m?)             ; <- Type-checking the n (before the pattern* is getting processed)
-                                              (p?)             ; <- Type-checking the pattern* (before its getting processed)
-                                              (every? v? (p>)) ; <- Validating the n with every key of the pattern*
-                                              (s?)))           ; <- After the validation and only in strict* mode, searching for extra keys in the map
+                                         (and (m?)             ; <- Type-checking the 'n' (before the 'pattern*' is getting processed) ...
+                                              (p?)             ; <- Type-checking the 'pattern*' (before its getting processed) ...
+                                              (every? v? (p>)) ; <- Validating the 'n' with every key of the 'pattern*' ...
+                                              (s?)))           ; <- After the validation and only in 'strict*' mode, searching for extra keys in the map ...
                                      (or (not  test*)
                                          (t? n test*)))
                                 #?(:clj  (catch Exception e (if explain* (do (-> e         println))))
@@ -279,7 +279,7 @@
   ;      :xor* (functions in vector)(opt)
   ;       At most one of the functions in this vector can returns with true.}}
   ;  :prefix* (string)(opt)
-  ;   The :prefix* will be prepend to the value of :e* when an expection occurs.
+  ;   The ':prefix*' will be prepend to the value of ':e*' when an expection occurs.
   ;  :test* (map)(opt)
   ;   {:and* (functions in vector)(opt)
   ;    :e* (string)
