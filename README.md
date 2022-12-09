@@ -1,8 +1,6 @@
 
 # pattern-api
 
-...
-
 ### Overview
 
 The <strong>pattern-api</strong> is a simple Clojure/ClojureScript tool which
