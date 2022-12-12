@@ -92,7 +92,7 @@ Checks whether the given data is invalid or not.
      :xor* (functions in vector)(opt)
       At most one of the functions in this vector can returns with true.}}
  :prefix* (string)(opt)
-  The :prefix* will be prepend to the value of :e* when an expection occurs.
+  The ':prefix*' will be prepend to the value of ':e*' when an expection occurs.
  :test* (map)(opt)
   {:and* (functions in vector)(opt)
    :e* (string)
@@ -381,7 +381,7 @@ Checks whether the given data is valid or not.
      :xor* (functions in vector)(opt)
       At most one of the functions in this vector can returns with true.}}
  :prefix* (string)(opt)
-  The :prefix* will be prepend to the value of :e* when an expection occurs.
+  The ':prefix*' will be prepend to the value of ':e*' when an expection occurs.
  :test* (map)(opt)
   {:and* (functions in vector)(opt)
    :e* (string)
@@ -502,7 +502,7 @@ true
 
           (i? [] @state/IGNORED?)
 
-          (c? [f*] (if (fn? f*) f* (t> :testing-method-must-be-a-function)))
+          (c? [f*] (if (fn? f*) f* (t> :testing-method-must-be-a-function nil)))
 
           (req? [x {:keys [opt* rep*]}]
                 (and (not opt*)
