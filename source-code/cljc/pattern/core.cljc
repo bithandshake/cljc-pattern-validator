@@ -53,7 +53,7 @@
   ;      :xor* (functions in vector)(opt)
   ;       At most one of the functions in this vector can returns with true.}}
   ;  :prefix* (string)(opt)
-  ;   The ':prefix*' will be prepend to the value of ':e*' when an expection occurs.
+  ;   The ':prefix*' will be prepended to the value of ':e*' when an expection occurs.
   ;  :test* (map)(opt)
   ;   {:and* (functions in vector)(opt)
   ;    :e* (string)
@@ -104,14 +104,14 @@
   ; @example
   ; (valid? {:b "B"}
   ;         {:pattern* {:a {:rep* [:b]
-  ;                         :e* "The map has to contains at least :a or :b!"}}})
+  ;                         :e* "The map has to contain at least :a or :b!"}}})
   ; =>
   ; true
   ;
   ; @example
   ; (valid? {}
   ;         {:pattern* {:a {:rep* [:b]
-  ;                         :e* "The map has to contains at least :a or :b!"}}})
+  ;                         :e* "The map has to contain at least :a or :b!"}}})
   ; =>
   ; false
   ;
@@ -241,7 +241,7 @@
                                          ; (s?)             <- After the validation and only in 'strict*' mode, searching for extra keys in the map ...
                                          (and (m?)
                                               (p?)
-                                              (every? v? (p>)) 
+                                              (every? v? (p>))
                                               (s?)))
                                      (or (not  test*)
                                          (t? n test*)))
@@ -295,7 +295,7 @@
   ;    :or* (functions in vector)(opt)
   ;    :xor* (functions in vector)(opt)}
   ;  :strict* (boolean)(opt)
-  ;   If set to true, other keys than passed in the pattern will be not allowed!
+  ;   If set to true, other keys than passed in the pattern will not be allowed!
   ;   Default: false
   ;   W/ {:pattern* ...}}
   ;
