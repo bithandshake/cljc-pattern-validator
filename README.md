@@ -35,7 +35,7 @@ You can track the changes of the <strong>pattern-api</strong> library [here](CHA
 
 ### How to validate a data?
 
-The [`pattern.api/valid?`](documentation/cljc/pattern/API.md/valid) function
+The [`pattern.api/valid?`](documentation/cljc/pattern/API.md/#valid) function
 checks whether the give data is valid or not.
 
 - By using the `{:explain* true}` setting (default: true) the function will
@@ -183,7 +183,7 @@ false
 
 ### How the turn off the validator?
 
-The [`pattern.api/ignore!`](documentation/cljc/pattern/API.md/ignore) function
+The [`pattern.api/ignore!`](documentation/cljc/pattern/API.md/#ignore) function
 turns off the validator. Every checked data will be qualified as valid.
 
 For product releases and stable versions.

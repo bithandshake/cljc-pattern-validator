@@ -353,7 +353,7 @@ Checks whether the given data is valid or not.
 @param (*) n
 @param (map) options
 {:explain* (boolean)(opt)
-  If set to true the error message will be printed.
+  If set to true the error messages will be printed.
   Default: true
  :pattern* (map)
   {:my-key (map)
@@ -393,7 +393,7 @@ Checks whether the given data is valid or not.
    :or* (functions in vector)(opt)
    :xor* (functions in vector)(opt)}
  :strict* (boolean)(opt)
-  If set to true, other keys than passed in the pattern will be not allowed!
+  If set to true, other keys in data than passed in the pattern will not be allowed!
   Default: false
   W/ {:pattern* ...}}
 ```
@@ -566,7 +566,11 @@ true
 
          (if (i?) :validating-ignored
                   (boolean (try (and (or (not pattern*)
-                                         (and (m?)                                              (p?)                                              (every? v? (p>))                                              (s?)))                                     (or (not  test*)
+                                         (and (m?)
+                                              (p?)
+                                              (every? v? (p>)) 
+                                              (s?)))
+                                     (or (not  test*)
                                          (t? n test*)))
                                 #?(:clj  (catch Exception e (if explain* (do (-> e         println))))
                                    :cljs (catch :default  e (if explain* (do (-> e .-stack println))))))))))
