@@ -25,7 +25,7 @@
   ; @param (*) n
   ; @param (map) options
   ; {:explain* (boolean)(opt)
-  ;   If set to true the error message will be printed.
+  ;   If set to true the error messages will be printed.
   ;   Default: true
   ;  :pattern* (map)
   ;   {:my-key (map)
@@ -65,7 +65,7 @@
   ;    :or* (functions in vector)(opt)
   ;    :xor* (functions in vector)(opt)}
   ;  :strict* (boolean)(opt)
-  ;   If set to true, other keys than passed in the pattern will be not allowed!
+  ;   If set to true, other keys in data than passed in the pattern will not be allowed!
   ;   Default: false
   ;   W/ {:pattern* ...}}
   ;
