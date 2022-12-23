@@ -334,14 +334,14 @@
   ; @example
   ; (invalid? {:b "B"}
   ;           {:pattern* {:a {:rep* [:b]
-  ;                           :e* "The map has to contains at least :a or :b!"}}})
+  ;                           :e* "The map has to contain at least :a or :b!"}}})
   ; =>
   ; false
   ;
   ; @example
   ; (invalid? {}
   ;           {:pattern* {:a {:rep* [:b]
-  ;                           :e* "The map has to contains at least :a or :b!"}}})
+  ;                           :e* "The map has to contain at least :a or :b!"}}})
   ; =>
   ; true
   ;
