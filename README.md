@@ -36,7 +36,7 @@ You can track the changes of the <strong>pattern-api</strong> library [here](CHA
 ### How to validate a data?
 
 The [`pattern.api/valid?`](documentation/cljc/pattern/API.md/#valid) function
-checks whether the give data is valid or not.
+checks whether the given data is valid or not.
 
 - By using the `{:explain* true}` setting (default: true) the function will
   print the error messages on the console.
@@ -144,7 +144,7 @@ data and it's values must be maps with logic gates and test functions like the
 (valid? {:a "A" :b :b :c 2} {:prefix* "This map key"
                              :pattern* {:a {:e* ":a must be a string!"
                                             :f* string?}
-                                         :b {:e* ":b must be a keyword!"
+                                        :b {:e* ":b must be a keyword!"
                                             :f* keyword?
                                             :opt* true}
                                         :c {:e* ":c must be an integer, greater than 1"
@@ -186,7 +186,7 @@ false
 The [`pattern.api/ignore!`](documentation/cljc/pattern/API.md/#ignore) function
 turns off the validator. Every checked data will be qualified as valid.
 
-For product releases and stable versions.
+Recommended for product releases and stable versions.
 
 ```
 (ignore!)
