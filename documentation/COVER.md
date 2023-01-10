@@ -1,8 +1,7 @@
 
-
 # pattern-api documentation
 
-Documentation of the [pattern-api](https://github.com/bithandshake-hq/pattern-api) Clojure / ClojureScript library
+Documentation of the [pattern-api](https://github.com/bithandshake/pattern-api) Clojure / ClojureScript library
 
 ##### [README](../README.md) > DOCUMENTATION
 
