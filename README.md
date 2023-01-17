@@ -67,10 +67,17 @@ true
 true
 ```
 
+```
+(valid? :my-keyword {:test {:e* "This value must be a string!"
+                            :f* string?}})
+=>
+false
+;; This value must be a string!
+```
+
 You can loose the leash on your data by using the `:opt*` and `:ign*` keys.
 The `{:opt* true}` setting allows the data to be nil.
-The `{:ign* true}` setting skips any other validator and the data will be qualified
-as valid.
+By using the `{:ign* true}` setting the data will be qualified as valid.
 
 ```
 (valid? "My string" {:test {:e* "This value must be a string!"
@@ -113,6 +120,19 @@ when you use patterns for testing with multiple error messages.
 true    
 ```
 
+```
+(valid? :my-keyword {:prefix* "This value"
+                     :test {:e* "must be a string!"
+                            :f* string?}})
+=>
+false
+
+; In the printed error message the :prefix* prepended to the :e* and the result
+; looks like this:
+
+; This value must be a string!
+```
+
 You can compose complex tests by using the following logic gates:
 `:and*`, `:nand*`, `:not*`, `:nor*`, `:or*`, `:xor*`.
 
@@ -136,9 +156,11 @@ true
 ```
 
 You can use patterns to validate maps by using the `:pattern*` key.
-The pattern must be a map. It's keys will be matched with the keys of the given
-data and it's values must be maps with logic gates and test functions like the
-`:test*` map in the previous examples.
+The pattern must be a map and its keys will be matched with the keys of the given
+data.
+
+The pattern's values must be maps with logic gate and test function set.
+(Just like the `:test*` set in the previous examples)
 
 ```
 (valid? {:a "A" :b :b :c 2} {:prefix* "This map key"
@@ -155,6 +177,7 @@ true
 
 In the test maps of a pattern, you can specify which keys can replace other keys
 in the given data by using the `:rep*` key.
+
 In the following example, the `:a` key can replace the `:b` key and vica versa.
 
 ```
@@ -172,13 +195,16 @@ true
 By using the `{:strict* true}` setting, only the given pattern's keys will be allowed
 to presence in the data.
 
+In the following example the validator returns false because the :b key is not defined
+in the pattern and the :strict* mode doesn't allow extra keys is the data.
+
 ```
 (valid? {:a "A" :b "B"} {:prefix* "This map key"
                          :pattern* {:a {:e* ":a must be a string!"
                                         :f* string?}}
                          :strict* true})
 =>
-false                                 
+false
 ```
 
 ### How the turn off the validator?
