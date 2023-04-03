@@ -1,29 +1,29 @@
 
-# pattern-api
+# cljc-patterns
 
 ### Overview
 
-The <strong>pattern-api</strong> is a simple Clojure/ClojureScript tool which
+The <strong>cljc-patterns</strong> is a simple Clojure/ClojureScript tool that
 helps you to check and validate every kind of data in your application.
 
 ### deps.edn
 
 ```
-{:deps {bithandshake/pattern-api {:git/url "https://github.com/bithandshake/pattern-api"
-                                  :sha     "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{:deps {bithandshake/cljc-patterns {:git/url "https://github.com/bithandshake/cljc-patterns"
+                                    :sha     "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
 ```
 
 ### Current version
 
-Check out the latest commit on the [release branch](https://github.com/bithandshake/pattern-api/tree/release).
+Check out the latest commit on the [release branch](https://github.com/bithandshake/cljc-patterns/tree/release).
 
 ### Documentation
 
-The <strong>pattern-api</strong> functional documentation is [available here](documentation/COVER.md).
+The <strong>cljc-patterns</strong> functional documentation is [available here](documentation/COVER.md).
 
 ### Changelog
 
-You can track the changes of the <strong>pattern-api</strong> library [here](CHANGES.md).
+You can track the changes of the <strong>cljc-patterns</strong> library [here](CHANGES.md).
 
 ### Index
 
@@ -61,7 +61,7 @@ true
 true
 
 (valid? "My string" {:test {:e* "This value must be a nonempty string!"
-                            :f*   string?
+                            :f* string?
                             :not* empty?}})
 =>
 true
@@ -77,18 +77,18 @@ false
 
 You can loose the leash on your data by using the `:opt*` and `:ign*` keys.
 The `{:opt* true}` setting allows the data to be nil.
-By using the `{:ign* true}` setting the data will be qualified as valid.
+By using the `{:ign* true}` setting the data will be simply qualified as valid.
 
 ```
 (valid? "My string" {:test {:e* "This value must be a string!"
                             :opt* true
-                            :f*   string?}})
+                            :f* string?}})
 =>
 true
 
 (valid? nil {:test {:e* "This value must be a string!"
                     :opt* true
-                    :f*   string?}})
+                    :f* string?}})
 =>
 true                            
 ```
@@ -98,13 +98,13 @@ true
 
 (valid? "My string" {:test {:e* "This value must be a string!"
                             :ign* CIRCUMSTANCE
-                            :f*   string?}})
+                            :f* string?}})
 =>
 true
 
 (valid? :keyword {:test {:e* "This value must be a string!"
                          :ign* CIRCUMSTANCE
-                         :f*   string?}})
+                         :f* string?}})
 =>
 true                            
 ```
@@ -133,13 +133,13 @@ false
 ; This value must be a string!
 ```
 
-You can compose complex tests by using the following logic gates:
+You can compose complex tests by using this logic gates:
 `:and*`, `:nand*`, `:not*`, `:nor*`, `:or*`, `:xor*`.
 
 ```
 (valid? ["A" "B"] {:test {:e* "This value must be a nonempty vector or map!"
                           :not* empty?
-                          :or*  [map? vector?]}})
+                          :or* [map? vector?]}})
 =>                          
 true
 
@@ -159,8 +159,8 @@ You can use patterns to validate maps by using the `:pattern*` key.
 The pattern must be a map and its keys will be matched with the keys of the given
 data.
 
-The pattern's values must be maps with logic gate and test function set.
-(Just like the `:test*` set in the previous examples)
+Values in pattern must be maps with a logic gate and test function set.
+(Like the `:test*` set in the previous examples)
 
 ```
 (valid? {:a "A" :b :b :c 2} {:prefix* "This map key"
@@ -175,7 +175,7 @@ The pattern's values must be maps with logic gate and test function set.
 true                                            
 ```
 
-In the test maps of a pattern, you can specify which keys can replace other keys
+In the test maps of patterns, you can specify which keys can replace other keys
 in the given data by using the `:rep*` key.
 
 In the following example, the `:a` key can replace the `:b` key and vica versa.

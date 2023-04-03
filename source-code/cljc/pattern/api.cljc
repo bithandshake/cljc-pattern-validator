@@ -1,16 +1,16 @@
 
-(ns pattern.api
-    (:require [pattern.core :as core]
-              [pattern.reg  :as reg]))
+(ns patterns.api
+    (:require [patterns.core :as core]
+              [patterns.reg  :as reg]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
-; pattern.core
+; patterns.core
 (def ignore!  core/ignore!)
 (def valid?   core/valid?)
 (def invalid? core/invalid?)
 
-; pattern.reg
+; patterns.reg
 (def reg-pattern! reg/reg-pattern!)
 (def reg-test!    reg/reg-test!)

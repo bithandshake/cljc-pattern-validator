@@ -1,6 +1,6 @@
 
-(ns pattern.core
-    (:require [pattern.state :as state]))
+(ns patterns.core
+    (:require [patterns.state :as state]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -136,35 +136,35 @@
           (p> [] (if (map? pattern*) pattern* (get @state/PATTERNS pattern*)))
 
           ; Joins together the parts of the error message.
-          (e> [e x] (println)
-                    (println (str "validation failed on value:\n" x))
-                    (println)
-                    (println (str "validation failed in data:\n"  n))
-                    (println)
-                    (if prefix* (str prefix* " " e)
-                                (str             e)))
+          (e> [e x t] (println)
+                      (if t (println (str "validation failed on test:\n"  t)))
+                      (if t (println))
+                      (if x (println (str "validation failed on value:\n" x)))
+                      (if x (println))
+                      (if n (println (str "validation failed in data:\n"  n)))
+                      (if n (println))
+                      (if prefix* (str prefix* " " e)
+                                  (str             e)))
 
           ; Throws an error.
-          (t> [e x]
-              #?(:clj  (throw (Exception. (e> e x)))
-                 :cljs (throw (js/Error.  (e> e x)))))
+          (t> [e x t]
+              #?(:clj  (throw (Exception. (e> e x t)))
+                 :cljs (throw (js/Error.  (e> e x t)))))
 
           ; Returns true if the validator has been turned off.
           (i? [] @state/IGNORED?)
 
           ; Returns back with the given value if it is a function, otherwise throws an error.
-          (c? [f*] (if (fn? f*) f* (t> :testing-method-must-be-a-function nil)))
+          (c? [f*] (if (fn? f*) f* (t> :testing-method-must-be-a-function nil :f*)))
 
-          ; Returns true if the key is not optional or not replaced by another key,
-          ; and its value is nil, ...
-          (req? [x {:keys [opt* rep*]}]
-                (and (not opt*)
-                     (not (and rep* (some #(% n) rep*)))
-                     (-> x nil?)))
-
-          ; Returns true if the is optional and its is nil
+          ; Returns true if the key is nil and optional
           (opt? [x {:keys [opt*]}]
-                (and opt* (nil? x)))
+                (and (nil? x) opt*))
+
+          ; Returns true if the key is nil and replaced by another key
+          (rep? [x {:keys [rep*]}]
+                (and (nil? x)
+                     (some #(% n) rep*)))
 
           ; Returns true if at least one function in the 'and*' vector does not return with false, ...
           (and? [x {:keys [and*]}]
@@ -198,14 +198,15 @@
           ; Runs all kind of tests on the passed 'x'.
           (t? [x {:keys [ign* e*] :as test*}]
               (cond ign*            :validation-skipped
-                    (opt?  x test*) :optional-and-not-passed
-                    (req?  x test*) (t> e* x)
-                    (and?  x test*) (t> e* x)
-                    (f?    x test*) (t> e* x)
-                    (nand? x test*) (t> e* x)
-                    (nor?  x test*) (t> e* x)
-                    (not?  x test*) (t> e* x)
-                    (or?   x test*) (t> e* x)
+                    (opt?  x test*) :not-passed-but-optional
+                    (rep?  x test*) :not-passed-but-replaced
+                    (nil?  x)       (t> e* x :nil?)
+                    (and?  x test*) (t> e* x :and*)
+                    (f?    x test*) (t> e* x :f*)
+                    (nand? x test*) (t> e* x :nand*)
+                    (nor?  x test*) (t> e* x :nor*)
+                    (not?  x test*) (t> e* x :not*)
+                    (or?   x test*) (t> e* x :or*)
                     :else :key-passed-all-of-the-tests))
 
           ; Takes a key and a 'test*' from the pattern and passes the value (get by the key)
@@ -218,13 +219,13 @@
           (s? [] (or (not strict*)
                      (= (keys  n)
                         (keys (p>)))
-                     (t> :strict-matching-failed nil)))
+                     (t> :strict-matching-failed nil :strict*)))
 
           ; Throws an error if the 'n' is not a map.
           (m? [] (or (map? n)
                      (when explain* (println "Expected a map but got:" (-> n type)))
                      ; The println skipped (it returns with nil), throwing an error
-                     (t> :invalid-value nil)))
+                     (t> :invalid-value nil nil)))
 
           ; Throws an error if the 'pattern*' is not a keyword or a map.
           (p? [] (or (map?     pattern*)
@@ -232,7 +233,7 @@
                      (when explain* (println "Expected a keyword type pattern-id or a map type pattern but got:" (-> pattern* type))
                                     (println pattern*))
                      ; The println skipped (it returns with nil), throwing an error ...
-                     (t> :invalid-pattern nil)))]
+                     (t> :invalid-pattern nil :pattern*)))]
 
          (if (i?) :validating-ignored
                   (boolean (try (and (or (not pattern*)
