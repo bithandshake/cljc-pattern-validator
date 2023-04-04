@@ -1,6 +1,6 @@
 
-(ns patterns.core
-    (:require [patterns.state :as state]))
+(ns validator.core
+    (:require [validator.state :as state]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------

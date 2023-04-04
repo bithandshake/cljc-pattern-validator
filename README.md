@@ -1,29 +1,29 @@
 
-# cljc-patterns
+# cljc-validator
 
 ### Overview
 
-The <strong>cljc-patterns</strong> is a simple Clojure/ClojureScript tool that
+The <strong>cljc-validator</strong> is a simple Clojure/ClojureScript tool that
 helps you to check and validate every kind of data in your application.
 
 ### deps.edn
 
 ```
-{:deps {bithandshake/cljc-patterns {:git/url "https://github.com/bithandshake/cljc-patterns"
-                                    :sha     "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{:deps {bithandshake/cljc-validator {:git/url "https://github.com/bithandshake/cljc-validator"
+                                     :sha     "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
 ```
 
 ### Current version
 
-Check out the latest commit on the [release branch](https://github.com/bithandshake/cljc-patterns/tree/release).
+Check out the latest commit on the [release branch](https://github.com/bithandshake/cljc-validator/tree/release).
 
 ### Documentation
 
-The <strong>cljc-patterns</strong> functional documentation is [available here](documentation/COVER.md).
+The <strong>cljc-validator</strong> functional documentation is [available here](documentation/COVER.md).
 
 ### Changelog
 
-You can track the changes of the <strong>cljc-patterns</strong> library [here](CHANGES.md).
+You can track the changes of the <strong>cljc-validator</strong> library [here](CHANGES.md).
 
 ### Index
 
@@ -35,7 +35,7 @@ You can track the changes of the <strong>cljc-patterns</strong> library [here](C
 
 ### How to validate a data?
 
-The [`patterns.api/valid?`](documentation/cljc/pattern/API.md/#valid) function
+The [`validator.api/valid?`](documentation/cljc/pattern/API.md/#valid) function
 checks whether the given data is valid or not.
 
 - By using the `{:explain* true}` setting (default: true) the function will
@@ -209,7 +209,7 @@ false
 
 ### How the turn off the validator?
 
-The [`patterns.api/ignore!`](documentation/cljc/pattern/API.md/#ignore) function
+The [`validator.api/ignore!`](documentation/cljc/pattern/API.md/#ignore) function
 turns off the validator. Every checked data will be qualified as valid.
 
 Recommended for product releases and stable versions.
