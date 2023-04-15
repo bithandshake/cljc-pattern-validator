@@ -195,8 +195,8 @@ true
 By using the `{:strict* true}` setting, only the given pattern's keys will be allowed
 to presence in the data.
 
-In the following example the validator returns false because the :b key is not defined
-in the pattern and the :strict* mode doesn't allow extra keys is the data.
+In the following example the `valid?` function returns false because the :b key is not defined
+in the pattern and the :strict* mode doesn't allow extra keys in the data.
 
 ```
 (valid? {:a "A" :b "B"} {:prefix* "This map key"
