@@ -25,13 +25,13 @@ The <strong>cljc-validator</strong> functional documentation is [available here]
 
 You can track the changes of the <strong>cljc-validator</strong> library [here](CHANGES.md).
 
+# Usage
+
 ### Index
 
 - [How to validate a data?](#how-to-validate-a-data)
 
 - [How to turn off the validator?](#how-to-turn-off-the-validator)
-
-# Usage
 
 ### How to validate a data?
 
