@@ -1,7 +1,7 @@
 
-# pattern.api isomorphic namespace
+# validator.api isomorphic namespace
 
-##### [README](../../../README.md) > [DOCUMENTATION](../../COVER.md) > pattern.api
+##### [README](../../../README.md) > [DOCUMENTATION](../../COVER.md) > validator.api
 
 ### Index
 
@@ -43,9 +43,9 @@ After using it, the validating functions will return as in case with a valid dat
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [pattern.api :refer [ignore!]]))
+(ns my-namespace (:require [validator.api :refer [ignore!]]))
 
-(pattern.api/ignore!)
+(validator.api/ignore!)
 (ignore!)
 ```
 
@@ -197,10 +197,10 @@ false
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [pattern.api :refer [invalid?]]))
+(ns my-namespace (:require [validator.api :refer [invalid?]]))
 
-(pattern.api/invalid? ...)
-(invalid?             ...)
+(validator.api/invalid? ...)
+(invalid?               ...)
 ```
 
 </details>
@@ -269,10 +269,10 @@ Registers a reusable pattern with id.
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [pattern.api :refer [reg-pattern!]]))
+(ns my-namespace (:require [validator.api :refer [reg-pattern!]]))
 
-(pattern.api/reg-pattern! ...)
-(reg-pattern!             ...)
+(validator.api/reg-pattern! ...)
+(reg-pattern!               ...)
 ```
 
 </details>
@@ -333,10 +333,10 @@ Registers a reusable test with id.
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [pattern.api :refer [reg-test!]]))
+(ns my-namespace (:require [validator.api :refer [reg-test!]]))
 
-(pattern.api/reg-test! ...)
-(reg-test!             ...)
+(validator.api/reg-test! ...)
+(reg-test!               ...)
 ```
 
 </details>
@@ -490,29 +490,30 @@ true
   (letfn [
           (p> [] (if (map? pattern*) pattern* (get @state/PATTERNS pattern*)))
 
-          (e> [e x] (println)
-                    (println (str "validation failed on value:\n" x))
-                    (println)
-                    (println (str "validation failed in data:\n"  n))
-                    (println)
-                    (if prefix* (str prefix* " " e)
-                                (str             e)))
+          (e> [e x t] (println)
+                      (if t (println (str "validation failed on test:\n"  t)))
+                      (if t (println))
+                      (if x (println (str "validation failed on value:\n" x)))
+                      (if x (println))
+                      (if n (println (str "validation failed in data:\n"  n)))
+                      (if n (println))
+                      (if prefix* (str prefix* " " e)
+                                  (str             e)))
 
-          (t> [e x]
-              #?(:clj  (throw (Exception. (e> e x)))
-                 :cljs (throw (js/Error.  (e> e x)))))
+          (t> [e x t]
+              #?(:clj  (throw (Exception. (e> e x t)))
+                 :cljs (throw (js/Error.  (e> e x t)))))
 
           (i? [] @state/IGNORED?)
 
-          (c? [f*] (if (fn? f*) f* (t> :testing-method-must-be-a-function nil)))
-
-          (req? [x {:keys [opt* rep*]}]
-                (and (not opt*)
-                     (not (and rep* (some #(% n) rep*)))
-                     (-> x nil?)))
+          (c? [f*] (if (fn? f*) f* (t> :testing-method-must-be-a-function nil :f*)))
 
           (opt? [x {:keys [opt*]}]
-                (and opt* (nil? x)))
+                (and (nil? x) opt*))
+
+          (rep? [x {:keys [rep*]}]
+                (and (nil? x)
+                     (some #(% n) rep*)))
 
           (and? [x {:keys [and*]}]
                 (and and* (some #(-> x % not) and*)))
@@ -538,14 +539,15 @@ true
 
           (t? [x {:keys [ign* e*] :as test*}]
               (cond ign*            :validation-skipped
-                    (opt?  x test*) :optional-and-not-passed
-                    (req?  x test*) (t> e* x)
-                    (and?  x test*) (t> e* x)
-                    (f?    x test*) (t> e* x)
-                    (nand? x test*) (t> e* x)
-                    (nor?  x test*) (t> e* x)
-                    (not?  x test*) (t> e* x)
-                    (or?   x test*) (t> e* x)
+                    (opt?  x test*) :not-passed-but-optional
+                    (rep?  x test*) :not-passed-but-replaced
+                    (nil?  x)       (t> e* x :nil?)
+                    (and?  x test*) (t> e* x :and*)
+                    (f?    x test*) (t> e* x :f*)
+                    (nand? x test*) (t> e* x :nand*)
+                    (nor?  x test*) (t> e* x :nor*)
+                    (not?  x test*) (t> e* x :not*)
+                    (or?   x test*) (t> e* x :or*)
                     :else :key-passed-all-of-the-tests))
 
           (v? [[k test* :as x]]
@@ -554,17 +556,17 @@ true
           (s? [] (or (not strict*)
                      (= (keys  n)
                         (keys (p>)))
-                     (t> :strict-matching-failed nil)))
+                     (t> :strict-matching-failed nil :strict*)))
 
           (m? [] (or (map? n)
                      (when explain* (println "Expected a map but got:" (-> n type)))
-                     (t> :invalid-value nil)))
+                     (t> :invalid-value nil nil)))
 
           (p? [] (or (map?     pattern*)
                      (keyword? pattern*)
                      (when explain* (println "Expected a keyword type pattern-id or a map type pattern but got:" (-> pattern* type))
                                     (println pattern*))
-                     (t> :invalid-pattern nil)))]
+                     (t> :invalid-pattern nil :pattern*)))]
 
          (if (i?) :validating-ignored
                   (boolean (try (and (or (not pattern*)
@@ -584,15 +586,15 @@ true
 <summary>Require</summary>
 
 ```
-(ns my-namespace (:require [pattern.api :refer [valid?]]))
+(ns my-namespace (:require [validator.api :refer [valid?]]))
 
-(pattern.api/valid? ...)
-(valid?             ...)
+(validator.api/valid? ...)
+(valid?               ...)
 ```
 
 </details>
 
 ---
 
-This documentation is generated by the [docs-api](https://github.com/bithandshake/docs-api) engine
+This documentation is generated with the [clj-docs-generator](https://github.com/bithandshake/clj-docs-generator) engine.
 
