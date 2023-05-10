@@ -137,12 +137,15 @@
 
           ; Joins together the parts of the error message.
           (e> [e x t] (println)
-                      (if t (println (str "validation failed on test:\n"  t)))
-                      (if t (println))
-                      (if x (println (str "validation failed on value:\n" x)))
-                      (if x (println))
-                      (if n (println (str "validation failed in data:\n"  n)))
-                      (if n (println))
+                      (if (nil? t) (println (str "validation failed on test:\nNIL"))
+                                   (println (str "validation failed on test:\n" t)))
+                      (println)
+                      (if (nil? x) (println (str "validation failed on value:\nNIL"))
+                                   (println (str "validation failed on value:\n" x)))
+                      (println)
+                      (if (nil? n) (println (str "validation failed in data:\nNIL"))
+                                   (println (str "validation failed in data:\n" n)))
+                      (println)
                       (if prefix* (str prefix* " " e)
                                   (str             e)))
 
@@ -157,11 +160,11 @@
           ; Returns back with the given value if it is a function, otherwise throws an error.
           (c? [f*] (if (fn? f*) f* (t> :testing-method-must-be-a-function nil :f*)))
 
-          ; Returns true if the key is nil and optional
+          ; Returns true if the value is nil and optional
           (opt? [x {:keys [opt*]}]
                 (and (nil? x) opt*))
 
-          ; Returns true if the key is nil and replaced by another key
+          ; Returns true if the value is nil and replaced by another value
           (rep? [x {:keys [rep*]}]
                 (and (nil? x)
                      (some #(% n) rep*)))
@@ -215,11 +218,11 @@
               (t? (k n) test*))
 
           ; Strict-matching only happens in 'strict*' mode!
-          ; Throws an error if there are some extra keys in the 'n'.
+          ; Throws an error if keys are missing or extra keys found in the data.
           (s? [] (or (not strict*)
                      (= (keys  n)
                         (keys (p>)))
-                     (t> :strict-matching-failed nil :strict*)))
+                     (t> :strict-matching-failed/data-not-match-with-pattern nil :strict*)))
 
           ; Throws an error if the 'n' is not a map.
           (m? [] (or (map? n)
