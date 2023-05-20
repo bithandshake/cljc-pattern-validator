@@ -135,8 +135,20 @@
           ; Returns the pattern by itself or by the 'pattern-id'.
           (p> [] (if (map? pattern*) pattern* (get @state/PATTERNS pattern*)))
 
+          ; Returns the sorted keys of the pattern.
+          (pks> [] (-> (p>) keys sort))
+
+          ; Returns the sorted keys of the data.
+          (nks> [] (-> n keys sort))
+
           ; Joins together the parts of the error message.
-          (e> [e x t] (println)
+          (e> [e x t] (when strict* (println)
+                                    (println "strict validation requires the following keys in data:")
+                                    (println (pks>))
+                                    (println)
+                                    (println "validated data has the following keys:")
+                                    (println (nks>)))
+                      (println)
                       (if (nil? t) (println (str "validation failed on test:\nNIL"))
                                    (println (str "validation failed on test:\n" t)))
                       (println)
@@ -220,8 +232,8 @@
           ; Strict-matching only happens in 'strict*' mode!
           ; Throws an error if keys are missing or extra keys found in the data.
           (s? [] (or (not strict*)
-                     (= (keys  n)
-                        (keys (p>)))
+                     (= (nks>)
+                        (pks>))
                      (t> :strict-matching-failed/data-not-match-with-pattern nil :strict*)))
 
           ; Throws an error if the 'n' is not a map.
@@ -241,7 +253,7 @@
          (if (i?) :validating-ignored
                   (boolean (try (and (or (not pattern*)
                                          ; (m?)             <- Type-checking the 'n' (before the 'pattern*' is getting processed) ...
-                                         ; (p?)             <- Type-checking the 'pattern*' (before its getting processed) ...
+                                         ; (p?)             <- Type-checking the 'pattern*' (before it's getting processed) ...
                                          ; (every? v? (p>)) <- Validating the 'n' with every key of the 'pattern*' ...
                                          ; (s?)             <- After the validation and only in 'strict*' mode, searching for extra keys in the map ...
                                          (and (m?)
