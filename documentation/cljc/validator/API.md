@@ -490,7 +490,17 @@ true
   (letfn [
           (p> [] (if (map? pattern*) pattern* (get @state/PATTERNS pattern*)))
 
-          (e> [e x t] (println)
+          (pks> [] (-> (p>) keys sort))
+
+          (nks> [] (-> n keys sort))
+
+          (e> [e x t] (when strict* (println)
+                                    (println "strict validation requires the following keys in data:")
+                                    (println (pks>))
+                                    (println)
+                                    (println "validated data has the following keys:")
+                                    (println (nks>)))
+                      (println)
                       (if (nil? t) (println (str "validation failed on test:\nNIL"))
                                    (println (str "validation failed on test:\n" t)))
                       (println)
@@ -557,8 +567,8 @@ true
               (t? (k n) test*))
 
           (s? [] (or (not strict*)
-                     (= (keys  n)
-                        (keys (p>)))
+                     (= (nks>)
+                        (pks>))
                      (t> :strict-matching-failed/data-not-match-with-pattern nil :strict*)))
 
           (m? [] (or (map? n)
