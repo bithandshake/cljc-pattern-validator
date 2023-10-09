@@ -234,7 +234,7 @@
           (s? [] (or (not strict*)
                      (= (nks>)
                         (pks>))
-                     (t> :strict-matching-failed/data-not-match-with-pattern nil :strict*)))
+                     (t> :strict-matching-failed/data-does-not-match-with-pattern nil :strict*)))
 
           ; Throws an error if the 'n' is not a map.
           (m? [] (or (map? n)
