@@ -569,7 +569,7 @@ true
           (s? [] (or (not strict*)
                      (= (nks>)
                         (pks>))
-                     (t> :strict-matching-failed/data-not-match-with-pattern nil :strict*)))
+                     (t> :strict-matching-failed/data-does-not-match-with-pattern nil :strict*)))
 
           (m? [] (or (map? n)
                      (when explain* (println "Expected a map but got:" (-> n type)))

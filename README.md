@@ -77,7 +77,7 @@ false
 
 You can loose the leash on your data by using the `:opt*` and `:ign*` keys.
 The `{:opt* true}` setting allows the data to be nil.
-By using the `{:ign* true}` setting the data will be simply qualified as valid.
+By using the `{:ign* true}` setting the data will be simply declared as valid.
 
 ```
 (valid? "My string" {:test {:e* "This value must be a string!"
@@ -210,7 +210,7 @@ false
 ### How the turn off the validator?
 
 The [`validator.api/ignore!`](documentation/cljc/pattern/API.md/#ignore) function
-turns off the validator. Every checked data will be qualified as valid.
+turns off the validator. Every checked data will be declared as valid.
 
 Recommended for product releases and stable versions.
 
