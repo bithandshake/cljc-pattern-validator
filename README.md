@@ -52,27 +52,27 @@ any test fails.
 ```
 (valid? "My string" {:test {:e* "This value must be a string!"
                             :f* string?}})
-=>
-true
+; =>
+; true
 
 (valid? "My string" {:test {:e* "This value must be nonempty!"
                             :not* empty?}})
-=>
-true
+; =>
+; true
 
 (valid? "My string" {:test {:e* "This value must be a nonempty string!"
                             :f* string?
                             :not* empty?}})
-=>
-true
+; =>
+; true
 ```
 
 ```
 (valid? :my-keyword {:test {:e* "This value must be a string!"
                             :f* string?}})
-=>
-false
-;; This value must be a string!
+; =>
+; false
+; "This value must be a string!"
 ```
 
 You can loose the leash on your data by using the `:opt*` and `:ign*` keys.
@@ -83,14 +83,14 @@ By using the `{:ign* true}` setting the data will be simply declared as valid.
 (valid? "My string" {:test {:e* "This value must be a string!"
                             :opt* true
                             :f* string?}})
-=>
-true
+; =>
+; true
 
 (valid? nil {:test {:e* "This value must be a string!"
                     :opt* true
                     :f* string?}})
-=>
-true                            
+; =>
+; true                       
 ```
 
 ```
@@ -99,14 +99,14 @@ true
 (valid? "My string" {:test {:e* "This value must be a string!"
                             :ign* CIRCUMSTANCE
                             :f* string?}})
-=>
-true
+; =>
+; true
 
 (valid? :keyword {:test {:e* "This value must be a string!"
                          :ign* CIRCUMSTANCE
                          :f* string?}})
-=>
-true                            
+; =>
+; true                       
 ```
 
 The `:prefix*` key helps you to use shorter error messages. It will be very useful
@@ -116,21 +116,17 @@ when you use patterns for testing with multiple error messages.
 (valid? "My string" {:prefix* "This value"
                      :test {:e* "must be a string!"
                             :f* string?}})
-=>
-true    
+; =>
+; true
 ```
 
 ```
 (valid? :my-keyword {:prefix* "This value"
                      :test {:e* "must be a string!"
                             :f* string?}})
-=>
-false
-
-; In the printed error message the :prefix* prepended to the :e* and the result
-; looks like this:
-
-; This value must be a string!
+; =>
+; false
+; "This value must be a string!"
 ```
 
 You can compose complex tests by using this logic gates:
@@ -140,19 +136,19 @@ You can compose complex tests by using this logic gates:
 (valid? ["A" "B"] {:test {:e* "This value must be a nonempty vector or map!"
                           :not* empty?
                           :or* [map? vector?]}})
-=>                          
-true
+; =>
+; true
 
 (valid? ["A" "B"] {:test {:e* "This value must be a nonempty vector with string items!"
                           :and* [vector? #(every? string?)]
                           :not* empty?}})
-=>                          
-true
+; =>
+; true
 
 (valid? ["A" "B"] {:test {:e* "This value must be a nonempty vector or an empty value!"
                           :xor* [vector? empty?]}})
-=>                          
-true
+; =>
+; true
 ```
 
 You can use patterns to validate maps by using the `:pattern*` key.
@@ -171,8 +167,8 @@ Values in pattern must be maps with a logic gate and test function set.
                                             :opt* true}
                                         :c {:e* ":c must be an integer, greater than 1"
                                             :and* [integer? #(> % 1)]}}})
-=>
-true                                            
+; =>
+; true                                       
 ```
 
 In the test maps of patterns, you can specify which keys can replace other keys
@@ -188,8 +184,8 @@ In the following example, the `:a` key can replace the `:b` key and vica versa.
                                    :b {:e* ":b must be a keyword!"
                                        :f* keyword?
                                        :rep* [:a]}}})
-=>
-true                                       
+; =>
+; true                                  
 ```
 
 By using the `{:strict* true}` setting, only the given pattern's keys will be allowed
@@ -203,8 +199,9 @@ in the pattern and the :strict* mode doesn't allow extra keys in the data.
                          :pattern* {:a {:e* ":a must be a string!"
                                         :f* string?}}
                          :strict* true})
-=>
-false
+; =>
+; false
+; "This map key :a must be a string!"
 ```
 
 ### How the turn off the validator?
