@@ -38,16 +38,24 @@ You can track the changes of the <strong>cljc-validator</strong> library [here](
 The [`validator.api/valid?`](documentation/cljc/pattern/API.md/#valid) function
 checks whether the given data is valid or not.
 
-- By using the `{:explain* true}` setting (default: true) the function will
-  print the error messages on the console.
+- By usign the `:allowed*` parameter you can define which keys are allowed in the
+  given data (use only with map type data).
+- By using the `{:explain* true}` setting (default: `true`) the error message of the
+  first failed test will be printed on the console.
 - By using the `{:prefix* "..."}` setting, a prefix will be prepended to the
-  printed error messages.
-- By using the `{:strict* true}` setting, other keys in data than passed in the
-  pattern will not be allowed!  
+  beginning of the printed error message.
+- By usign the `:required*` parameter you can define which keys are required in the
+  given data (use only with map type data).
+- By using the `{:strict* true}` setting, other keys in the data than that are in
+  the pattern will not be allowed!  
+  (Using the `:allowed*` parameter could replace using the {`:strict* true`} setting.)
 
 You can check the given data by specifying the `:test*` set. A set of test functions
-and logic gates. The `:e*` key in the set will be the printed error message if
-any test fails.
+and logic gates. The `:e*` key in the test will be the printed error message in case
+of any of the tests fails.
+
+In the following (3) examples the `valid?` function returns `true` in all cases,
+because the given data (`"My string"`) passes all the tests (string type and not empty).
 
 ```
 (valid? "My string" {:test {:e* "This value must be a string!"
@@ -67,6 +75,9 @@ any test fails.
 ; true
 ```
 
+In the following example the `valid?` function returns `false`, because the given
+data (`:my-keyword`) does not passes the test (not string type).
+
 ```
 (valid? :my-keyword {:test {:e* "This value must be a string!"
                             :f* string?}})
@@ -75,23 +86,27 @@ any test fails.
 ; "This value must be a string!"
 ```
 
-You can loose the leash on your data by using the `:opt*` and `:ign*` keys.
-The `{:opt* true}` setting allows the data to be nil.
-By using the `{:ign* true}` setting the data will be simply declared as valid.
+The `{:opt* true}` setting allows the value of a key to be `nil`.
+
+> If the `:required*` parameter is in use, no need to mark optional keys in the pattern.
+  Key existence checking will be done with using the `:required*` parameter.
+
+In the following example the `valid?` function returns `true`,  because the given data
+is `nil` but the `{:opt* true}` setting allows it to be empty.
 
 ```
-(valid? "My string" {:test {:e* "This value must be a string!"
-                            :opt* true
-                            :f* string?}})
-; =>
-; true
-
 (valid? nil {:test {:e* "This value must be a string!"
                     :opt* true
                     :f* string?}})
 ; =>
 ; true                       
 ```
+
+By using the `{:ign* true}` setting the data will be declared as valid, because
+all the tests defined for the key will be skipped (ignored).
+
+In the following examples (2) the `valid?` function returns `true` in both cases,
+no matter if the data could pass the tests or not.
 
 ```
 (def CIRCUMSTANCE true)
@@ -109,8 +124,8 @@ By using the `{:ign* true}` setting the data will be simply declared as valid.
 ; true                       
 ```
 
-The `:prefix*` key helps you to use shorter error messages. It will be very useful
-when you use patterns for testing with multiple error messages.
+The `:prefix*` key helps you to use shorter error messages. It's very useful
+when you use patterns with long error messages.
 
 ```
 (valid? "My string" {:prefix* "This value"
@@ -129,7 +144,7 @@ when you use patterns for testing with multiple error messages.
 ; "This value must be a string!"
 ```
 
-You can compose complex tests by using this logic gates:
+You can compose complex tests by using the following logic gates:
 `:and*`, `:nand*`, `:not*`, `:nor*`, `:or*`, `:xor*`.
 
 ```
@@ -151,12 +166,15 @@ You can compose complex tests by using this logic gates:
 ; true
 ```
 
-You can use patterns to validate maps by using the `:pattern*` key.
-The pattern must be a map and its keys will be matched with the keys of the given
-data.
+By using the `:pattern*` key you can use patterns to validate map type data.
+Patterns must be a maps and during the validation their keys will be matched with
+the keys of the given data.
 
-Values in pattern must be maps with a logic gate and test function set.
-(Like the `:test*` set in the previous examples)
+Every value in a pattern must be a test map (logic gates and test functions) that
+tests the value of the same key in the given data.
+
+In the following example the `valid?` function returns `true`, because all values
+of the given data passes their tests defined in the given pattern.
 
 ```
 (valid? {:a "A" :b :b :c 2} {:prefix* "This map key"
@@ -171,8 +189,12 @@ Values in pattern must be maps with a logic gate and test function set.
 ; true                                       
 ```
 
-In the test maps of patterns, you can specify which keys can replace other keys
-in the given data by using the `:rep*` key.
+By using the `:rep*` key in a test map of a pattern, you can specify which other keys
+of the given data can replace the tested key.
+
+> If the `:required*` parameter is in use, no need to specify replacement keys
+  for any keys in the pattern. Key existence checking will be done with using the
+  `:required*` parameter.
 
 In the following example, the `:a` key can replace the `:b` key and vica versa.
 
@@ -191,8 +213,10 @@ In the following example, the `:a` key can replace the `:b` key and vica versa.
 By using the `{:strict* true}` setting, only the given pattern's keys will be allowed
 to presence in the data.
 
-In the following example the `valid?` function returns false because the :b key is not defined
-in the pattern and the :strict* mode doesn't allow extra keys in the data.
+> Using the `:allowed*` parameter could replace the using of the `{:strict* true}` setting.
+
+In the following example the `valid?` function returns `false` because the `:b` key is not
+defined in the pattern and the `{:strict* true}` setting doesn't allow extra keys in the data.
 
 ```
 (valid? {:a "A" :b "B"} {:prefix* "This map key"
@@ -201,8 +225,38 @@ in the pattern and the :strict* mode doesn't allow extra keys in the data.
                          :strict* true})
 ; =>
 ; false
-; "This map key :a must be a string!"
 ```
+
+By using the `:allowed*` parameter you can specify which keys are allowed to presence
+in the given data.
+
+In the following example the `valid?` function returns `false` because the `:b` key
+is not specified in the `allowed*` keys vector.
+
+```
+(valid? {:a "A" :b "B"} {:prefix* "This map key"
+                         :pattern* {:a {:e* ":a must be a string!"
+                                        :f* string?}}
+                         :allowed* [:a]})
+; =>
+; false
+```
+
+By using the `:required*` parameter you can specify which keys are required to
+presence in the given data.
+
+In the following example the `valid?` function returns `false` because the `:c` key
+is specified in the `required*` keys vector.
+
+```
+(valid? {:a "A" :b "B"} {:prefix* "This map key"
+                         :pattern* {:a {:e* ":a must be a string!"
+                                        :f* string?}}
+                         :required* [:a :b :c]})
+; =>
+; false
+```
+
 
 ### How the turn off the validator?
 

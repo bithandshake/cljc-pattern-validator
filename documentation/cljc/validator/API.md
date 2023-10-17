@@ -63,36 +63,54 @@ Checks whether the given data is invalid or not.
 ```
 @param (*) n
 @param (map) options
-{:explain* (boolean)(opt)
-  If set to true the error message will be printed.
+{:allowed* (vector)(opt)
+  Defines the allowed keys of the given data (only use with map type data!).
+  Using the '{:strict* true}' setting could replace the using of the ':allowed*'
+  parameter.
+ :explain* (boolean)(opt)
+  If set to TRUE the error message will be printed.
   Default: true
- :pattern* (map)
+ :pattern* (map)(opt)
+  Defines the pattern of the given data (only use with map type data!).
   {:my-key (map)
     {:and* (functions in vector)(opt)
-      All of the functions in this vector has to return with true.
+      All of the functions in this vector has to return with TRUE.
      :e* (string)
       The error message.
      :f* (function)(opt)
-      The function has to return with true.
-     :ign* (function)(opt)
-      If this function returns with true, the value will be ignored.
+      The function has to return with TRUE.
+     :ign* (boolean)(opt)
+      If set to TRUE, the value will be ignored.
      :nand* (functions in vector)(opt)
-      At least one of the functions in this vector has to return with false.
+      At least one of the functions in this vector has to return with FALSE.
      :not* (function)(opt)
-      The function has to return with false.
+      The function has to return with FALSE.
      :nor* (functions in vector)(opt)
-      All of the functions in this vector has to return with false.
+      All of the functions in this vector has to return with FALSE.
      :opt* (boolean)(opt)
-      If set to true, the value will be handled as optional.
+      If set to TRUE, the key will be handled as optional.
+      If the ':required*' parameter is in use, no need to mark optional keys
+      in the pattern. Key existence checking will be done with using the
+      ':required*' parameter.
      :or* (functions in vector)(opt)
-      At least one of the functions in this vector has to return with true.
+      At least one of the functions in this vector has to return with TRUE.
      :rep* (vector)(opt)
-      If the tested key does not exist in the map, at least one of
-      the keys in this vector has to be in the n map.
+      If the tested key does not exist in the map, at least one of the keys
+      in this vector has to be in the n map in order to replace the missing key.
+      If the ':required*' parameter is in use, no need to specify replacement keys
+      for any keys in the pattern. Key existence checking will be done with
+      using the ':required*' parameter.
      :xor* (functions in vector)(opt)
-      At most one of the functions in this vector can returns with true.}}
+      At most one of the functions in this vector can returns with TRUE.}}
  :prefix* (string)(opt)
   The ':prefix*' will be prepend to the value of ':e*' when an expection occurs.
+ :required* (vector)(opt)
+  Defines the required keys of the given data (only use with map type data!).
+ :strict* (boolean)(opt)
+  If set to TRUE, other keys in data than that are in the pattern will not be allowed!
+  Using the ':allowed*' parameter could replace the using of the '{:strict* true}' setting.
+  Default: false
+  W/ {:pattern* ...}
  :test* (map)(opt)
   {:and* (functions in vector)(opt)
    :e* (string)
@@ -103,11 +121,7 @@ Checks whether the given data is invalid or not.
    :not* (function)(opt)
    :opt* (boolean)(opt)
    :or* (functions in vector)(opt)
-   :xor* (functions in vector)(opt)}
- :strict* (boolean)(opt)
-  If set to true, other keys than passed in the pattern will not be allowed!
-  Default: false
-  W/ {:pattern* ...}}
+   :xor* (functions in vector)(opt)}}
 ```
 
 ```
@@ -211,7 +225,7 @@ false
 
 ```
 @description
-Registers a reusable pattern with id.
+Registers a reusable pattern with ID.
 ```
 
 ```
@@ -219,28 +233,28 @@ Registers a reusable pattern with id.
 @param (map) pattern
 {:my-key (map)
   {:and* (functions in vector)(opt)
-    All of the functions in this vector has to return with true.
+    All of the functions in this vector has to return with TRUE.
    :e* (string)
     The error message.
    :f* (function)(opt)
-    The function has to be return with true.
-   :ign* (function)(opt)
-    If this function returns with true, the value will be ignored.
+    The function has to be return with TRUE.
+   :ign* (boolean)(opt)
+    If set to TRUE, the value will be ignored.
    :nand* (functions in vector)(opt)
-    At least one of the functions in this vector has to return with false.
+    At least one of the functions in this vector has to return with FALSE.
    :not* (function)(opt)
-    The function has to be return with false.
+    The function has to be return with FALSE.
    :nor* (functions in vector)(opt)
-    All of the functions in this vector has to return with false.
+    All of the functions in this vector has to return with FALSE.
    :opt* (boolean)(opt)
-    If set to true, the value will be handled as optional.
+    If set to TRUE, the value will be handled as optional.
    :or* (functions in vector)(opt)
-    At least one of the functions in this vector has to return with true.
+    At least one of the functions in this vector has to return with TRUE.
    :rep* (vector)(opt)
     If the tested key does not exist in the map, at least one of
     the keys in this vector has to be in the n map.
    :xor* (functions in vector)(opt)
-    At most one of the functions in this vector can returns with true.}}
+    At most one of the functions in this vector can returns with TRUE.}}
 ```
 
 ```
@@ -283,28 +297,28 @@ Registers a reusable pattern with id.
 
 ```
 @description
-Registers a reusable test with id.
+Registers a reusable test with ID.
 ```
 
 ```
 @param (keyword) test-id
 @param (map) test
 {:and* (functions in vector)(opt)
-  All of the functions in this vector has to return with true.
+  All of the functions in this vector has to return with TRUE.
  :e* (string)
   The error message.
  :f* (function)(opt)
-  The function has to be return with true.
+  The function has to be return with TRUE.
  :nand* (functions in vector)(opt)
-  At least one of the functions in this vector has to return with false.
+  At least one of the functions in this vector has to return with FALSE.
  :not* (function)(opt)
-  The function has to be return with false.
+  The function has to be return with FALSE.
  :nor* (functions in vector)(opt)
-  All of the functions in this vector has to return with false.
+  All of the functions in this vector has to return with FALSE.
  :or* (functions in vector)(opt)
-  At least one of the functions in this vector has to return with true.
+  At least one of the functions in this vector has to return with TRUE.
  :xor* (functions in vector)(opt)
-  At most one of the functions in this vector can returns with true.}
+  At most one of the functions in this vector can returns with TRUE.}
 ```
 
 ```
@@ -353,36 +367,54 @@ Checks whether the given data is valid or not.
 ```
 @param (*) n
 @param (map) options
-{:explain* (boolean)(opt)
-  If set to true the error messages will be printed.
+{:allowed* (vector)(opt)
+  Defines the allowed keys of the given data (only use with map type data!).
+  Using the '{:strict* true}' setting could replace the using of the ':allowed*'
+  parameter.
+ :explain* (boolean)(opt)
+  If set to TRUE the error messages will be printed.
   Default: true
- :pattern* (map)
+ :pattern* (map)(opt)
+  Defines the pattern of the given data (only use with map type data!).
   {:my-key (map)
     {:and* (functions in vector)(opt)
-      All of the functions in this vector has to return with true.
+      All of the functions in this vector has to return with TRUE.
      :e* (string)
       The error message.
      :f* (function)(opt)
-      The function has to return with true.
-     :ign* (function)(opt)
-      If this function returns with true, the value will be ignored.
+      The function has to return with TRUE.
+     :ign* (boolean)(opt)
+      If set to TRUE, the value will be ignored.
      :nand* (functions in vector)(opt)
-      At least one of the functions in this vector has to return with false.
+      At least one of the functions in this vector has to return with FALSE.
      :not* (function)(opt)
-      The function has to return with false.
+      The function has to return with FALSE.
      :nor* (functions in vector)(opt)
-      All of the functions in this vector has to return with false.
+      All of the functions in this vector has to return with FALSE.
      :opt* (boolean)(opt)
-      If set to true, the value will be handled as optional.
+      If set to TRUE, the key will be handled as optional.
+      If the ':required*' parameter is in use, no need to mark optional keys
+      in the pattern. Key existence checking will be done with using the
+      ':required*' parameter.
      :or* (functions in vector)(opt)
-      At least one of the functions in this vector has to return with true.
+      At least one of the functions in this vector has to return with TRUE.
      :rep* (vector)(opt)
-      If the tested key does not exist in the map, at least one of
-      the keys in this vector has to be in the n map.
+      If the tested key does not exist in the map, at least one of the keys
+      in this vector has to be in the n map in order to replace the missing key.
+      If the ':required*' parameter is in use, no need to specify replacement keys
+      for any keys in the pattern. Key existence checking will be done with
+      using the ':required*' parameter.
      :xor* (functions in vector)(opt)
-      At most one of the functions in this vector can returns with true.}}
+      At most one of the functions in this vector can returns with TRUE.}}
  :prefix* (string)(opt)
   The ':prefix*' will be prepended to the value of ':e*' when an expection occurs.
+ :required* (vector)(opt)
+  Defines the required keys of the given data (only use with map type data!).
+ :strict* (boolean)(opt)
+  If set to TRUE, other keys in data than that are in the pattern will not be allowed!
+  Using the ':allowed*' parameter could replace the using of the '{:strict* true}' setting.
+  Default: false
+  W/ {:pattern* ...}
  :test* (map)(opt)
   {:and* (functions in vector)(opt)
    :e* (string)
@@ -393,11 +425,7 @@ Checks whether the given data is valid or not.
    :not* (function)(opt)
    :opt* (boolean)(opt)
    :or* (functions in vector)(opt)
-   :xor* (functions in vector)(opt)}
- :strict* (boolean)(opt)
-  If set to true, other keys in data than passed in the pattern will not be allowed!
-  Default: false
-  W/ {:pattern* ...}}
+   :xor* (functions in vector)(opt)}}
 ```
 
 ```
@@ -486,7 +514,7 @@ true
 
 ```
 (defn valid?
-  [n {:keys [explain* pattern* prefix* strict* test*] :or {explain* true}}]
+  [n {:keys [allowed* explain* pattern* prefix* required* strict* test*] :or {explain* true}}]
   (letfn [
           (p> [] (if (map? pattern*) pattern* (get @state/PATTERNS pattern*)))
 
@@ -494,7 +522,7 @@ true
 
           (nks> [] (-> n keys sort))
 
-          (e> [e x t] (when strict* (println)
+          (e> [e v t] (when strict* (println)
                                     (println "strict validation requires the following keys in data:")
                                     (println (pks>))
                                     (println)
@@ -504,8 +532,8 @@ true
                       (if (nil? t) (println (str "validation failed on test:\nNIL"))
                                    (println (str "validation failed on test:\n" t)))
                       (println)
-                      (if (nil? x) (println (str "validation failed on value:\nNIL"))
-                                   (println (str "validation failed on value:\n" x)))
+                      (if (nil? v) (println (str "validation failed on value:\nNIL"))
+                                   (println (str "validation failed on value:\n" v)))
                       (println)
                       (if (nil? n) (println (str "validation failed in data:\nNIL"))
                                    (println (str "validation failed in data:\n" n)))
@@ -513,9 +541,9 @@ true
                       (if prefix* (str prefix* " " e)
                                   (str             e)))
 
-          (t> [e x t]
-              #?(:clj  (throw (Exception. (e> e x t)))
-                 :cljs (throw (js/Error.  (e> e x t)))))
+          (t> [e v t]
+              #?(:clj  (throw (Exception. (e> e v t)))
+                 :cljs (throw (js/Error.  (e> e v t)))))
 
           (i? [] @state/IGNORED?)
 
@@ -527,6 +555,9 @@ true
           (rep? [x {:keys [rep*]}]
                 (and (nil? x)
                      (some #(% n) rep*)))
+
+          (req? [x _]
+                (and (nil? x) required*))
 
           (and? [x {:keys [and*]}]
                 (and and* (some #(-> x % not) and*)))
@@ -552,8 +583,9 @@ true
 
           (t? [x {:keys [ign* e*] :as test*}]
               (cond ign*            :validation-skipped
-                    (opt?  x test*) :not-passed-but-optional
-                    (rep?  x test*) :not-passed-but-replaced
+                    (opt?  x test*) :missing-key-but-optional
+                    (rep?  x test*) :missing-key-but-replaced
+                    (req?  x test*) :missing-key-but-not-required
                     (nil?  x)       (t> e* x :nil?)
                     (and?  x test*) (t> e* x :and*)
                     (f?    x test*) (t> e* x :f*)
@@ -561,15 +593,20 @@ true
                     (nor?  x test*) (t> e* x :nor*)
                     (not?  x test*) (t> e* x :not*)
                     (or?   x test*) (t> e* x :or*)
-                    :else :key-passed-all-of-the-tests))
+                    :else :key-passed-all-the-tests))
 
           (v? [[k test* :as x]]
               (t? (k n) test*))
 
-          (s? [] (or (not strict*)
-                     (= (nks>)
+          (s? [] (or (= (nks>)
                         (pks>))
-                     (t> :strict-matching-failed/data-does-not-match-with-pattern nil :strict*)))
+                     (t> :data-keys-does-not-match-with-pattern-keys nil :strict*)))
+
+          (a? [] (or (-> allowed* set (remove (keys n)) empty?)
+                     (t> :not-allowed-data-keys-found nil :allowed*)))
+
+          (r? [] (or (-> n keys set (remove required*) empty?)
+                     (t> :required-data-keys-missing nil :required*)))
 
           (m? [] (or (map? n)
                      (when explain* (println "Expected a map but got:" (-> n type)))
@@ -577,17 +614,15 @@ true
 
           (p? [] (or (map?     pattern*)
                      (keyword? pattern*)
-                     (when explain* (println "Expected a keyword type pattern-id or a map type pattern but got:" (-> pattern* type))
+                     (when explain* (println "Expected a keyword type pattern ID or a map type pattern but got:" (-> pattern* type))
                                     (println pattern*))
                      (t> :invalid-pattern nil :pattern*)))]
 
-         (if (i?) :validating-ignored
-                  (boolean (try (and (or (not pattern*)
-                                         (and (m?)
-                                              (p?)
-                                              (every? v? (p>))
-                                              (s?)))
-                                     (or (not  test*)
+         (if (i?) :validation-turned-off
+                  (boolean (try (and (or (not allowed*)
+                                         (m?)                                         (a?))                                     (or (not required*)
+                                         (m?)                                         (r?))                                     (or (not pattern*)
+                                         (and (m?)                                              (p?)                                              (or (not strict*)                                                  (s?))                                              (every? v? (p>))))                                     (or (not  test*)
                                          (t? n test*)))
                                 #?(:clj  (catch Exception e (if explain* (do (-> e         println))))
                                    :cljs (catch :default  e (if explain* (do (-> e .-stack println))))))))))

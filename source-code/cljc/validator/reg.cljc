@@ -7,34 +7,34 @@
 
 (defn reg-pattern!
   ; @description
-  ; Registers a reusable pattern with id.
+  ; Registers a reusable pattern with ID.
   ;
   ; @param (keyword) pattern-id
   ; @param (map) pattern
   ; {:my-key (map)
   ;   {:and* (functions in vector)(opt)
-  ;     All of the functions in this vector has to return with true.
+  ;     All of the functions in this vector has to return with TRUE.
   ;    :e* (string)
   ;     The error message.
   ;    :f* (function)(opt)
-  ;     The function has to be return with true.
-  ;    :ign* (function)(opt)
-  ;     If this function returns with true, the value will be ignored.
+  ;     The function has to be return with TRUE.
+  ;    :ign* (boolean)(opt)
+  ;     If set to TRUE, the value will be ignored.
   ;    :nand* (functions in vector)(opt)
-  ;     At least one of the functions in this vector has to return with false.
+  ;     At least one of the functions in this vector has to return with FALSE.
   ;    :not* (function)(opt)
-  ;     The function has to be return with false.
+  ;     The function has to be return with FALSE.
   ;    :nor* (functions in vector)(opt)
-  ;     All of the functions in this vector has to return with false.
+  ;     All of the functions in this vector has to return with FALSE.
   ;    :opt* (boolean)(opt)
-  ;     If set to true, the value will be handled as optional.
+  ;     If set to TRUE, the value will be handled as optional.
   ;    :or* (functions in vector)(opt)
-  ;     At least one of the functions in this vector has to return with true.
+  ;     At least one of the functions in this vector has to return with TRUE.
   ;    :rep* (vector)(opt)
   ;     If the tested key does not exist in the map, at least one of
   ;     the keys in this vector has to be in the n map.
   ;    :xor* (functions in vector)(opt)
-  ;     At most one of the functions in this vector can returns with true.}}
+  ;     At most one of the functions in this vector can returns with TRUE.}}
   ;
   ; @usage
   ; (reg-pattern! :my-pattern {...})
@@ -47,26 +47,26 @@
 
 (defn reg-test!
   ; @description
-  ; Registers a reusable test with id.
+  ; Registers a reusable test with ID.
   ;
   ; @param (keyword) test-id
   ; @param (map) test
   ; {:and* (functions in vector)(opt)
-  ;   All of the functions in this vector has to return with true.
+  ;   All of the functions in this vector has to return with TRUE.
   ;  :e* (string)
   ;   The error message.
   ;  :f* (function)(opt)
-  ;   The function has to be return with true.
+  ;   The function has to be return with TRUE.
   ;  :nand* (functions in vector)(opt)
-  ;   At least one of the functions in this vector has to return with false.
+  ;   At least one of the functions in this vector has to return with FALSE.
   ;  :not* (function)(opt)
-  ;   The function has to be return with false.
+  ;   The function has to be return with FALSE.
   ;  :nor* (functions in vector)(opt)
-  ;   All of the functions in this vector has to return with false.
+  ;   All of the functions in this vector has to return with FALSE.
   ;  :or* (functions in vector)(opt)
-  ;   At least one of the functions in this vector has to return with true.
+  ;   At least one of the functions in this vector has to return with TRUE.
   ;  :xor* (functions in vector)(opt)
-  ;   At most one of the functions in this vector can returns with true.}
+  ;   At most one of the functions in this vector can returns with TRUE.}
   ;
   ; @usage
   ; (reg-test! :my-test {...})
