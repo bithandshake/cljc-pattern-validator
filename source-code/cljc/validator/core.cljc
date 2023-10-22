@@ -262,7 +262,7 @@
               (t? (k n) test*))
 
           ; Strict-matching only happens in 'strict*' mode!
-          ; Throws an error if the keys of 'n' map does not match with the keys of pattern.
+          ; Throws an error if the keys of 'n' map does not match the keys of pattern.
           (s? [] (or (= (nks>)
                         (pks>))
                      (t> :data-keys-does-not-match-with-pattern-keys nil :strict*)))
