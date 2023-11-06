@@ -1,7 +1,11 @@
 
-# cljc-validator documentation
+### cljc-validator
 
-Documentation of the [cljc-validator](https://github.com/bithandshake/cljc-validator) Clojure / ClojureScript library
+Functional documentation of the [cljc-validator](https://github.com/bithandshake/cljc-validator) Clojure / ClojureScript library
+
+---
+
+
 
 ##### [README](../README.md) > DOCUMENTATION
 
@@ -11,5 +15,5 @@ Documentation of the [cljc-validator](https://github.com/bithandshake/cljc-valid
 
 ---
 
-This documentation is generated with the [clj-docs-generator](https://github.com/bithandshake/clj-docs-generator) engine.
+<sub>This documentation is generated with the [clj-docs-generator](https://github.com/bithandshake/clj-docs-generator) engine.</sub>
 

@@ -1,5 +1,9 @@
 
-# validator.api isomorphic namespace
+### validator.api
+
+Functional documentation of the validator.api isomorphic namespace
+
+---
 
 ##### [README](../../../README.md) > [DOCUMENTATION](../../COVER.md) > validator.api
 
@@ -14,6 +18,8 @@
 - [reg-test!](#reg-test)
 
 - [valid?](#valid)
+
+---
 
 ### ignore!
 
@@ -644,5 +650,5 @@ true
 
 ---
 
-This documentation is generated with the [clj-docs-generator](https://github.com/bithandshake/clj-docs-generator) engine.
+<sub>This documentation is generated with the [clj-docs-generator](https://github.com/bithandshake/clj-docs-generator) engine.</sub>
 
