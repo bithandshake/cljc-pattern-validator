@@ -1,2 +1,4 @@
 
-{:paths ["source-code/cljc"]}
+{:paths ["source-code/cljc"]
+ :deps  {org.clojure/clojure       {:mvn/version "1.10.1"}
+         org.clojure/clojurescript {:mvn/version "1.10.891"}}}
