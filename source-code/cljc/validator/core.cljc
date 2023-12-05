@@ -35,29 +35,29 @@
   ;   Defines the pattern of the given data (only use with map type data!).
   ;   {:my-key (map)
   ;     {:and* (functions in vector)(opt)
-  ;       All of the functions in this vector has to return with TRUE.
+  ;       All of the functions in this vector must return with TRUE.
   ;      :e* (string)
   ;       The error message.
   ;      :f* (function)(opt)
-  ;       The function has to return with TRUE.
+  ;       The function must return with TRUE.
   ;      :ign* (boolean)(opt)
   ;       If set to TRUE, the value will be ignored.
   ;      :nand* (functions in vector)(opt)
-  ;       At least one of the functions in this vector has to return with FALSE.
+  ;       At least one of the functions in this vector must return with FALSE.
   ;      :not* (function)(opt)
-  ;       The function has to return with FALSE.
+  ;       The function must return with FALSE.
   ;      :nor* (functions in vector)(opt)
-  ;       All of the functions in this vector has to return with FALSE.
+  ;       All of the functions in this vector must return with FALSE.
   ;      :opt* (boolean)(opt)
   ;       If set to TRUE, the key will be handled as optional.
   ;       If the ':required*' parameter is in use, no need to mark optional keys
   ;       in the pattern. Key existence checking will be done with using the
   ;       ':required*' parameter.
   ;      :or* (functions in vector)(opt)
-  ;       At least one of the functions in this vector has to return with TRUE.
+  ;       At least one of the functions in this vector must return with TRUE.
   ;      :rep* (vector)(opt)
   ;       If the tested key does not exist in the map, at least one of the keys
-  ;       in this vector has to be in the n map in order to replace the missing key.
+  ;       in this vector must be in the n map in order to replace the missing key.
   ;       If the ':required*' parameter is in use, no need to specify replacement keys
   ;       for any keys in the pattern. Key existence checking will be done with
   ;       using the ':required*' parameter.
@@ -119,14 +119,14 @@
   ; @example
   ; (valid? {:b "B"}
   ;         {:pattern* {:a {:rep* [:b]
-  ;                         :e* "The map has to contain at least :a or :b!"}}})
+  ;                         :e* "The map must contain at least :a or :b!"}}})
   ; =>
   ; true
   ;
   ; @example
   ; (valid? {}
   ;         {:pattern* {:a {:rep* [:b]
-  ;                         :e* "The map has to contain at least :a or :b!"}}})
+  ;                         :e* "The map must contain at least :a or :b!"}}})
   ; =>
   ; false
   ;
@@ -238,8 +238,8 @@
 
           ; Returns TRUE if not only one of the functions in the 'xor*' vector returns with TRUE, ...
           (xor? [x {:keys [xor*]}]
-                (letfn [(f [r %] (if (% x) (inc r) r))]
-                       (not= 1 (reduce f 0 xor*))))
+                (letfn [(f0 [r %] (if (% x) (inc r) r))]
+                       (not= 1 (reduce f0 0 xor*))))
 
           ; Runs all kind of tests on the passed 'x'.
           (t? [x {:keys [ign* e*] :as test*}]
@@ -326,29 +326,29 @@
   ;   Defines the pattern of the given data (only use with map type data!).
   ;   {:my-key (map)
   ;     {:and* (functions in vector)(opt)
-  ;       All of the functions in this vector has to return with TRUE.
+  ;       All of the functions in this vector must return with TRUE.
   ;      :e* (string)
   ;       The error message.
   ;      :f* (function)(opt)
-  ;       The function has to return with TRUE.
+  ;       The function must return with TRUE.
   ;      :ign* (boolean)(opt)
   ;       If set to TRUE, the value will be ignored.
   ;      :nand* (functions in vector)(opt)
-  ;       At least one of the functions in this vector has to return with FALSE.
+  ;       At least one of the functions in this vector must return with FALSE.
   ;      :not* (function)(opt)
-  ;       The function has to return with FALSE.
+  ;       The function must return with FALSE.
   ;      :nor* (functions in vector)(opt)
-  ;       All of the functions in this vector has to return with FALSE.
+  ;       All of the functions in this vector must return with FALSE.
   ;      :opt* (boolean)(opt)
   ;       If set to TRUE, the key will be handled as optional.
   ;       If the ':required*' parameter is in use, no need to mark optional keys
   ;       in the pattern. Key existence checking will be done with using the
   ;       ':required*' parameter.
   ;      :or* (functions in vector)(opt)
-  ;       At least one of the functions in this vector has to return with TRUE.
+  ;       At least one of the functions in this vector must return with TRUE.
   ;      :rep* (vector)(opt)
   ;       If the tested key does not exist in the map, at least one of the keys
-  ;       in this vector has to be in the n map in order to replace the missing key.
+  ;       in this vector must be in the n map in order to replace the missing key.
   ;       If the ':required*' parameter is in use, no need to specify replacement keys
   ;       for any keys in the pattern. Key existence checking will be done with
   ;       using the ':required*' parameter.
@@ -410,14 +410,14 @@
   ; @example
   ; (invalid? {:b "B"}
   ;           {:pattern* {:a {:rep* [:b]
-  ;                           :e* "The map has to contain at least :a or :b!"}}})
+  ;                           :e* "The map must contain at least :a or :b!"}}})
   ; =>
   ; false
   ;
   ; @example
   ; (invalid? {}
   ;           {:pattern* {:a {:rep* [:b]
-  ;                           :e* "The map has to contain at least :a or :b!"}}})
+  ;                           :e* "The map must contain at least :a or :b!"}}})
   ; =>
   ; true
   ;

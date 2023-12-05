@@ -13,26 +13,26 @@
   ; @param (map) pattern
   ; {:my-key (map)
   ;   {:and* (functions in vector)(opt)
-  ;     All of the functions in this vector has to return with TRUE.
+  ;     All of the functions in this vector must return with TRUE.
   ;    :e* (string)
   ;     The error message.
   ;    :f* (function)(opt)
-  ;     The function has to be return with TRUE.
+  ;     The function must be return with TRUE.
   ;    :ign* (boolean)(opt)
   ;     If set to TRUE, the value will be ignored.
   ;    :nand* (functions in vector)(opt)
-  ;     At least one of the functions in this vector has to return with FALSE.
+  ;     At least one of the functions in this vector must return with FALSE.
   ;    :not* (function)(opt)
-  ;     The function has to be return with FALSE.
+  ;     The function must be return with FALSE.
   ;    :nor* (functions in vector)(opt)
-  ;     All of the functions in this vector has to return with FALSE.
+  ;     All of the functions in this vector must return with FALSE.
   ;    :opt* (boolean)(opt)
   ;     If set to TRUE, the value will be handled as optional.
   ;    :or* (functions in vector)(opt)
-  ;     At least one of the functions in this vector has to return with TRUE.
+  ;     At least one of the functions in this vector must return with TRUE.
   ;    :rep* (vector)(opt)
   ;     If the tested key does not exist in the map, at least one of
-  ;     the keys in this vector has to be in the n map.
+  ;     the keys in this vector must be in the n map.
   ;    :xor* (functions in vector)(opt)
   ;     At most one of the functions in this vector can returns with TRUE.}}
   ;
@@ -52,19 +52,19 @@
   ; @param (keyword) test-id
   ; @param (map) test
   ; {:and* (functions in vector)(opt)
-  ;   All of the functions in this vector has to return with TRUE.
+  ;   All of the functions in this vector must return with TRUE.
   ;  :e* (string)
   ;   The error message.
   ;  :f* (function)(opt)
-  ;   The function has to be return with TRUE.
+  ;   The function must be return with TRUE.
   ;  :nand* (functions in vector)(opt)
-  ;   At least one of the functions in this vector has to return with FALSE.
+  ;   At least one of the functions in this vector must return with FALSE.
   ;  :not* (function)(opt)
-  ;   The function has to be return with FALSE.
+  ;   The function must be return with FALSE.
   ;  :nor* (functions in vector)(opt)
-  ;   All of the functions in this vector has to return with FALSE.
+  ;   All of the functions in this vector must return with FALSE.
   ;  :or* (functions in vector)(opt)
-  ;   At least one of the functions in this vector has to return with TRUE.
+  ;   At least one of the functions in this vector must return with TRUE.
   ;  :xor* (functions in vector)(opt)
   ;   At most one of the functions in this vector can returns with TRUE.}
   ;
