@@ -7,11 +7,6 @@
 ; @ignore
 ;
 ; @atom (map)
-(def PATTERNS (atom {}))
-
-; @ignore
-;
-; @atom (map)
 (def TESTS (atom {}))
 
 ; @ignore
