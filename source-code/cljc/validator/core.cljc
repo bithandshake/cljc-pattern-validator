@@ -14,7 +14,7 @@
   ; Defines a set of functions for testing the given data.
   ; If keyword it identifies a previously registered reusable test.
   ; {:allowed* (vector)(opt)
-  ;   Defines the allowed keys of the given data (only for map type data).
+  ;   Defines the allowed keys of the value (for map type values).
   ;  :and* (functions in vector)(opt)
   ;   All functions in this vector must return TRUE.
   ;  :e* (string)
@@ -34,14 +34,14 @@
   ;  :or* (functions in vector)(opt)
   ;   At least one function in this vector must return TRUE.
   ;  :required* (vector)(opt)
-  ;   Defines the required keys of the given data (only for map type data).
+  ;   Defines the required keys of the value (for map type values).
   ;  :xor* (functions in vector)(opt)
   ;   At most one function in this vector can return TRUE.
   ;  :my-key (map)(opt)
-  ;   Test functions under custom keys are applied on the corresponding value in the given data (only for map type data).
-  ;   If a custom key defined in the 'test' map, it must be present in the data map also.
+  ;   Test functions under custom keys are applied on the corresponding value (for map type data).
+  ;   Custom keys must be present in the given data also.
   ;   {:rep* (vector)(opt)
-  ;     Vector of keys that could replace a specific key in the given data.}}
+  ;     Vector of keys that could replace a specific key in the value (if missing or NIL).}}
   ; @param (map)(opt) options
   ; {:explain? (boolean)(opt)
   ;   If TRUE, the error messages will be printed.
@@ -76,13 +76,13 @@
   ;
   ; @example
   ; (valid? {:b "B"}
-  ;         {:a {:rep* [:b] :e* "Value must contain at least key :a or key :b!"}})
+  ;         {:a {:rep* [:b] :e* "Value must contain at least one of key :a or key :b!"}})
   ; =>
   ; true
   ;
   ; @example
   ; (valid? {}
-  ;         {:a {:rep* [:b] :e* "Value must contain at least key :a or key :b!"}})
+  ;         {:a {:rep* [:b] :e* "Value must contain at least one of key :a or key :b!"}})
   ; =>
   ; false
   ;
@@ -138,67 +138,71 @@
            (rep? [x {:keys [rep*]}]
                  (and rep* (nil? x) (rep* n rep*)))
 
+           ; Type-checks the given value. Throws an error if fails.
+           (chk* [x chk*]
+                 (or ((:type* chk*) x) (err> x chk* :chk*)))
+
            ; Returns TRUE if the given value passes the given rep* test
            ; (i.e., the given value contains any key from the given 'rep*' vector).
            (rep* [x rep*]
-                 ;(vld> rep* {:f* vector?  :e* :rep*-must-be-vector})
-                 ;(vld> x    {:f* seqable? :e* :unable-to-replace-key/non-seqable-data})
+                 (chk* rep* {:type* vector?  :e* :rep*-must-be-vector})
+                 (chk* x    {:type* seqable? :e* :unable-check-replacement-key/non-seqable-data})
                  (some #(get x %) rep*))
 
            ; Returns TRUE if the given value passes the given awd* test
            ; (i.e., the given value contains keys only from the given 'awd*' vector).
            (awd* [x awd*]
-                 ;(vld> awd* {:f* vector?  :e* :allowed*-must-be-vector})
-                 ;(vld> x    {:f* seqable? :e* :unable-to-check-allowed-keys/non-seqable-data})
+                 (chk* awd* {:type* vector?  :e* :allowed*-must-be-vector})
+                 (chk* x    {:type* seqable? :e* :unable-check-allowed-key/non-seqable-data})
                  (-> awd* set (remove (keys x)) empty?))
 
            ; Returns TRUE if the given value passes the given rqd* test
            ; (i.e., the given value contains all keys from the given 'rqd*' vector).
            (rqd* [x rqd*]
-                 ;(vld> awd* {:f* vector?  :e* :required*-must-be-vector})
-                 ;(vld> x    {:f* seqable? :e* :unable-to-check-required-keys/non-seqable-data})
+                 (chk* rqd* {:type* vector?  :e* :required*-must-be-vector})
+                 (chk* x    {:type* seqable? :e* :unable-check-required-keys/non-seqable-data})
                  (-> x keys set (remove rqd*) empty?))
 
            ; Returns TRUE if the given value passes the given and* test
            ; (i.e., all function in the given 'and*' vector returns TRUE).
            (and* [x and*]
-                 ;(vld> and* {:f* vector? :e* :and*-must-be-vector})
+                 (chk* and* {:type* vector? :e* :and*-must-be-vector})
                  (or (every? #(f* x %) and*)))
 
            ; Returns TRUE if the given value passes the given f* test
            ; (i.e., the given 'f*' function returns TRUE).
            (f* [x f*]
-               ;(vld> f* {:or* [fn? keyword?] :e* :f*-must-be-function})
+               (chk* f* {:type* ifn? :e* :f*-must-be-function})
                (f* x))
 
            ; Returns TRUE if the given value passes the given nand* test
            ; (i.e., at least one function in the given 'nand*' vector returns FALSE).
            (nand* [x nand*]
-                  ;(vld> nand* {:f* vector? :e* :nand*-must-be-vector})
+                  (chk* nand* {:type* vector? :e* :nand*-must-be-vector})
                   (some #(not* x %) nand*))
 
            ; Returns TRUE if the given value passes the given nor* test
            ; (i.e., all function in the given 'nor*' vector returns FALSE).
            (nor* [x nor*]
-                 ;(vld> nor* {:f* vector? :e* :nor*-must-be-vector})
+                 (chk* nor* {:type* vector? :e* :nor*-must-be-vector})
                  (every? #(not* x %) nor*))
 
            ; Returns TRUE if the given value passes the given not* test
            ; (i.e., the given 'not*' function returns TRUE).
            (not* [x not*]
-                 ;(vld> not* {:or* [fn? keyword?] :e* :not*-must-be-function})
+                 (chk* not* {:type* ifn? :e* :not*-must-be-function})
                  (-> x not* not))
 
            ; Returns TRUE if the given value passes the given or* test
            ; (i.e., at least one function in the given 'or*' vector returns TRUE).
            (or* [x or*]
-                ;(vld> or* {:f* vector? :e* :or*-must-be-vector})
+                (chk* or* {:type* vector? :e* :or*-must-be-vector})
                 (some #(f* x %) or*))
 
            ; Returns TRUE if the given value passes the given xor* test
            ; (i.e., at most one function in the given 'xor*' vector returns TRUE).
            (xor* [x xor*]
-                 ;(vld> xor* {:f* vector? :e* :xor*-must-be-vector})
+                 (chk* xor* {:type* vector? :e* :xor*-must-be-vector})
                  (loop [? false [% :as xor*] xor*]
                        (cond (-> xor* count zero?) true
                              (f* x %) (if ? false (recur true (drop xor*))))))
@@ -219,14 +223,14 @@
                          :required* (rqd*  x t)
                                     (vld? (get x k) (tst t)))) ; <- Recursive test for a custom key.
 
-           ; Returns TRUE if the given value passes all stage from the given test.
+           ; Returns TRUE if the given value passes all stages from the given test.
            (vld> [x {:keys [e*] :as test}]
                  (if (nil? x) (err> x test :nil?))
                  (every? (fn [[k t]] (or (tst* x k t) (err> x test k))) test))
 
            ; Returns TRUE if the given value is valid.
            (vld? [x test]
-                 (vld> test {:f* map? :e* :test-must-be-map})
+                 (chk* test {:type* map? :e* :test-must-be-map})
                  (cond (off?)        :validation-turned-off
                        (ign? x test) :skip-validation
                        (opt? x test) :nil-value-but-optional
@@ -239,7 +243,7 @@
 
 (defn invalid?
   ; @description
-  ; Returns TRUE if the given data does NOT pass the given test.
+  ; Returns TRUE if the given data fails the given test.
   ;
   ; @param (*) n
   ; @param (keyword or map) test
