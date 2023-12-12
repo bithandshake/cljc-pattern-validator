@@ -115,14 +115,14 @@
            (tst [test] (cond (map? test) test (keyword? test) (get @state/TESTS test)))
 
            ; Assembles the error message.
-           (prn> [x test t] (str "\n\nvalidation failed on test:\n"  (if (nil? t) "NIL" t)
+           (asm> [x test t] (str "\n\nvalidation failed on test:\n"  (if (nil? t) "NIL" t)
                                  "\n\nvalidation failed on value:\n" (if (nil? x) "NIL" x)
                                  "\n\nvalidation failed on data:\n"  (if (nil? n) "NIL" n)
-                                 "\n\n" prefix (if prefix " ") (:e* test)))
+                                 "\n\n" prefix (if prefix " ") (:e* test) "\n"))
 
            ; Throws an error.
-           (err> [x test t] #?(:clj  (throw (Exception. (prn> x test t)))
-                               :cljs (throw (js/Error.  (prn> x test t)))))
+           (err> [x test t] #?(:clj  (throw (Exception. (do (println (asm> x test t)) (str test))))
+                               :cljs (throw (js/Error.  (do (println (asm> x test t)) (str test))))))
 
            ; Returns TRUE if the validator has been turned off.
            (off? [] @state/TURNED-OFF?)
@@ -141,58 +141,64 @@
            ; Returns TRUE if the given value passes the given rep* test
            ; (i.e., the given value contains any key from the given 'rep*' vector).
            (rep* [x rep*]
-                 (vld> rep* {:f* vector?  :e* :rep*-must-be-vector})
-                 (vld> x    {:f* seqable? :e* :unable-to-replace-key/non-seqable-data})
+                 ;(vld> rep* {:f* vector?  :e* :rep*-must-be-vector})
+                 ;(vld> x    {:f* seqable? :e* :unable-to-replace-key/non-seqable-data})
                  (some #(get x %) rep*))
 
            ; Returns TRUE if the given value passes the given awd* test
            ; (i.e., the given value contains keys only from the given 'awd*' vector).
            (awd* [x awd*]
-                 (vld> awd* {:f* vector?  :e* :allowed*-must-be-vector})
-                 (vld> x    {:f* seqable? :e* :unable-to-check-allowed-keys/non-seqable-data})
+                 ;(vld> awd* {:f* vector?  :e* :allowed*-must-be-vector})
+                 ;(vld> x    {:f* seqable? :e* :unable-to-check-allowed-keys/non-seqable-data})
                  (-> awd* set (remove (keys x)) empty?))
 
            ; Returns TRUE if the given value passes the given rqd* test
            ; (i.e., the given value contains all keys from the given 'rqd*' vector).
            (rqd* [x rqd*]
-                 (vld> awd* {:f* vector?  :e* :required*-must-be-vector})
-                 (vld> x    {:f* seqable? :e* :unable-to-check-required-keys/non-seqable-data})
+                 ;(vld> awd* {:f* vector?  :e* :required*-must-be-vector})
+                 ;(vld> x    {:f* seqable? :e* :unable-to-check-required-keys/non-seqable-data})
                  (-> x keys set (remove rqd*) empty?))
 
            ; Returns TRUE if the given value passes the given and* test
            ; (i.e., all function in the given 'and*' vector returns TRUE).
            (and* [x and*]
-                 (vld> and* {:f* vector? :e* :and*-must-be-vector})
+                 ;(vld> and* {:f* vector? :e* :and*-must-be-vector})
                  (or (every? #(f* x %) and*)))
 
            ; Returns TRUE if the given value passes the given f* test
            ; (i.e., the given 'f*' function returns TRUE).
            (f* [x f*]
-               (vld> f* {:or* [fn? keyword?] :e* :f*-must-be-function})
+               ;(vld> f* {:or* [fn? keyword?] :e* :f*-must-be-function})
                (f* x))
 
            ; Returns TRUE if the given value passes the given nand* test
            ; (i.e., at least one function in the given 'nand*' vector returns FALSE).
            (nand* [x nand*]
-                  (vld> nand* {:f* vector? :e* :nand*-must-be-vector})
+                  ;(vld> nand* {:f* vector? :e* :nand*-must-be-vector})
                   (some #(not* x %) nand*))
 
            ; Returns TRUE if the given value passes the given nor* test
            ; (i.e., all function in the given 'nor*' vector returns FALSE).
            (nor* [x nor*]
-                 (vld> nor* {:f* vector? :e* :nor*-must-be-vector})
+                 ;(vld> nor* {:f* vector? :e* :nor*-must-be-vector})
                  (every? #(not* x %) nor*))
+
+           ; Returns TRUE if the given value passes the given not* test
+           ; (i.e., the given 'not*' function returns TRUE).
+           (not* [x not*]
+                 ;(vld> not* {:or* [fn? keyword?] :e* :not*-must-be-function})
+                 (-> x not* not))
 
            ; Returns TRUE if the given value passes the given or* test
            ; (i.e., at least one function in the given 'or*' vector returns TRUE).
            (or* [x or*]
-                (vld> or* {:f* vector? :e* :or*-must-be-vector})
+                ;(vld> or* {:f* vector? :e* :or*-must-be-vector})
                 (some #(f* x %) or*))
 
            ; Returns TRUE if the given value passes the given xor* test
            ; (i.e., at most one function in the given 'xor*' vector returns TRUE).
            (xor* [x xor*]
-                 (vld> xor* {:f* vector? :e* :xor*-must-be-vector})
+                 ;(vld> xor* {:f* vector? :e* :xor*-must-be-vector})
                  (loop [? false [% :as xor*] xor*]
                        (cond (-> xor* count zero?) true
                              (f* x %) (if ? false (recur true (drop xor*))))))
@@ -228,8 +234,8 @@
                        :validation (vld> x test)))]
 
           ; ...
-          #(:clj  (boolean (try (vld? n (tst test))) (catch Exception e (if explain? (-> e         println))))
-            :cljs (boolean (try (vld? n (tst test))) (catch :default  e (if explain? (-> e .-stack println))))))))
+          #?(:clj  (boolean (try (vld? n (tst test)) (catch Exception e (if explain? (-> e         println)))))
+             :cljs (boolean (try (vld? n (tst test)) (catch :default  e (if explain? (-> e .-stack println)))))))))
 
 (defn invalid?
   ; @description
@@ -243,5 +249,5 @@
   ([n test]
    (invalid? n test {}))
 
-  ([n test options])
-  (-> n (valid? test options) not))
+  ([n test options]
+   (-> n (valid? test options) not)))
