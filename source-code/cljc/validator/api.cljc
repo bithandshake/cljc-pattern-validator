@@ -1,8 +1,8 @@
 
 (ns validator.api
-    (:require [validator.core :as core]
-              [validator.side-effects :as side-effects]
-              [validator.reg :as reg]))
+    (:require [validator.core         :as core]
+              [validator.reg          :as reg]
+              [validator.side-effects :as side-effects]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
