@@ -10,7 +10,7 @@ helps you to check and validate every kind of data in your application.
 
 ```
 {:deps {bithandshake/cljc-validator {:git/url "https://github.com/bithandshake/cljc-validator"
-                                     :sha     "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+                                     :sha     "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}}}
 ```
 
 ### Current version
