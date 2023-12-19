@@ -16,6 +16,6 @@
   ; (reg-test! :my-test {...})
   ;
   ; @usage
-  ; (reg-test! :my-test {:f* string? :e* "Key :a must be a string!"})
+  ; (reg-test! :my-test {:f* string? :e* "Value must be a string!"})
   [test-id test]
   (swap! state/TESTS assoc test-id test))

@@ -12,9 +12,9 @@
   ; @param (*) n
   ; @param (keyword or map) test
   ; Defines a set of functions for testing the given data.
-  ; If keyword it identifies a previously registered reusable test.
+  ; If keyword, it identifies a registered reusable test.
   ; {:allowed* (vector)(opt)
-  ;   Defines the allowed keys of the value (for map type values).
+  ;   Defines the allowed keys of the data (for map type data).
   ;  :and* (functions in vector)(opt)
   ;   All functions in this vector must return TRUE.
   ;  :e* (string)
@@ -34,71 +34,71 @@
   ;  :or* (functions in vector)(opt)
   ;   At least one function in this vector must return TRUE.
   ;  :required* (vector)(opt)
-  ;   Defines the required keys of the value (for map type values).
+  ;   Defines the required keys of the data (for map type data).
   ;  :xor* (functions in vector)(opt)
   ;   At most one function in this vector can return TRUE.
   ;  :my-key (map)(opt)
   ;   Test functions under custom keys are applied on the corresponding value (for map type data).
   ;   Custom keys must be present in the given data also.
   ;   {:rep* (vector)(opt)
-  ;     Vector of keys that could replace a specific key in the value (if missing or NIL).}}
+  ;     Vector of keys that could replace a specific key (if missing or NIL) in the data.}}
   ; @param (map)(opt) options
   ; {:explain? (boolean)(opt)
-  ;   If TRUE, the error messages will be printed.
+  ;   If TRUE, the error message will be printed.
   ;   Default: true
   ;  :prefix (string)(opt)
   ;   Prepended to the error message.}
   ;
-  ; @example
+  ; @usage
   ; (valid? "abc"
   ;         {:f* string? :e* "Value must be a string!"})
   ; =>
   ; true
   ;
-  ; @example
+  ; @usage
   ; (valid? {:a "A"}
   ;         {:f* map? :e* "Value must be a map!"}
   ;          :a {:f* string? :not* empty? :e* "Key :a must be a nonempty string!"})
   ; =>
   ; true
   ;
-  ; @example
+  ; @usage
   ; (valid? {:a "A"}
   ;         {:a {:or* [keyword? string?] :e* "Key :a must be a keyword or a string!"}})
   ; =>
   ; true
   ;
-  ; @example
+  ; @usage
   ; (valid? {:a ""}
   ;         {:a {:and* [string? empty?] :e* "Key :a must be an empty string!"}})
   ; =>
   ; true
   ;
-  ; @example
+  ; @usage
   ; (valid? {:b "B"}
   ;         {:a {:rep* [:b] :e* "Value must contain at least one of key :a or key :b!"}})
   ; =>
   ; true
   ;
-  ; @example
+  ; @usage
   ; (valid? {}
   ;         {:a {:rep* [:b] :e* "Value must contain at least one of key :a or key :b!"}})
   ; =>
   ; false
   ;
-  ; @example
+  ; @usage
   ; (valid? {:a "a"}
   ;         {:required* [:a :b] :e* "Value must contain key :a and key :b!"}
   ; =>
   ; false
   ;
-  ; @example
+  ; @usage
   ; (valid? {:a "a"}
   ;         {:allowed* [:a :b] :e* "Value can contain only key :a and key :b!"}
   ; =>
   ; true
   ;
-  ; @example
+  ; @usage
   ; (reg-test! :my-test {:a {:f* string?}})
   ; (valid? {:a "A"} :my-test)
   ; =>
