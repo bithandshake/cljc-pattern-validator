@@ -13,9 +13,9 @@
   ; @param (map) test
   ;
   ; @usage
-  ; (reg-test! :my-test {...})
-  ;
-  ; @usage
   ; (reg-test! :my-test {:f* string? :e* "Value must be a string!"})
+  ;
+  ; @return (map)
   [test-id test]
-  (swap! state/TESTS assoc test-id test))
+  (-> state/TESTS (swap! assoc test-id test))
+  (-> test))
