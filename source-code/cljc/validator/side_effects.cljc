@@ -10,7 +10,7 @@
   ; Turns off the validator.
   ;
   ; @usage
-  ; (turn-off!)
+  ; (disable-validator!)
   []
   (reset! state/ENABLED? false))
 
@@ -19,6 +19,6 @@
   ; Turns on the validator.
   ;
   ; @usage
-  ; (turn-off!)
+  ; (enable-validator!)
   []
   (reset! state/ENABLED? true))

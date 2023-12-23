@@ -9,7 +9,7 @@
   ; @description
   ; Returns TRUE if the given data passes the given test.
   ;
-  ; @param (*) n
+  ; @param (*) data
   ; @param (keyword or map) test
   ; Defines a set of functions for testing the given data.
   ; If keyword, it identifies a registered reusable test.
@@ -105,10 +105,10 @@
   ; true
   ;
   ; @return (boolean)
-  ([n test]
+  ([data test]
    (valid? n test {}))
 
-  ([n test {:keys [explain? prefix] :or {explain? true}}]
+  ([data test {:keys [explain? prefix] :or {explain? true}}]
    (letfn [; If the given 'test' value ...
            ; ... is a map, returns it.
            ; ... is a keyword (ID of a registered test), returns the registered test.
@@ -118,7 +118,7 @@
            (asm> [x test t] (str "\n\nvalidation failed at test:\n"  (if (nil? test) "NIL" test)
                                  "\n\nvalidation failed at stage:\n" (if (nil? t)    "NIL" t)
                                  "\n\nvalidation failed on value:\n" (if (nil? x)    "NIL" x)
-                                 "\n\nvalidation failed on data:\n"  (if (nil? n)    "NIL" n)
+                                 "\n\nvalidation failed on data:\n"  (if (nil? data) "NIL" data)
                                  "\n\n" prefix (if prefix " ") (:e* test) "\n"))
 
            ; Throws an error.
@@ -240,20 +240,20 @@
                        :validation (vld> x test)))]
 
           ; ...
-          #?(:clj  (boolean (try (vld? n (tst test)) (catch Exception e (if explain? (-> e         println)))))
-             :cljs (boolean (try (vld? n (tst test)) (catch :default  e (if explain? (-> e .-stack println)))))))))
+          #?(:clj  (boolean (try (vld? data (tst test)) (catch Exception e (if explain? (-> e         println)))))
+             :cljs (boolean (try (vld? data (tst test)) (catch :default  e (if explain? (-> e .-stack println)))))))))
 
 (defn invalid?
   ; @description
   ; Returns TRUE if the given data fails the given test.
   ;
-  ; @param (*) n
+  ; @param (*) data
   ; @param (keyword or map) test
   ; @param (map)(opt) options
   ;
   ; @return (boolean)
-  ([n test]
-   (invalid? n test {}))
+  ([data test]
+   (invalid? data test {}))
 
-  ([n test options]
-   (-> n (valid? test options) not)))
+  ([data test options]
+   (-> data (valid? test options) not)))
