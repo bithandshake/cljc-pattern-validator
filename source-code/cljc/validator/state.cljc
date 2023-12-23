@@ -12,4 +12,4 @@
 ; @ignore
 ;
 ; @atom (boolean)
-(def TURNED-OFF? (atom false))
+(def ENABLED? (atom true))

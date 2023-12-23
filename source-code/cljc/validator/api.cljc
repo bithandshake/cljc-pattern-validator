@@ -15,4 +15,5 @@
 (def reg-test! reg/reg-test!)
 
 ; @redirect (validator.side-effects/*)
-(def turn-off! side-effects/turn-off!)
+(def disable-validator! side-effects/disable-validator!)
+(def enable-validator!  side-effects/enable-validator!)

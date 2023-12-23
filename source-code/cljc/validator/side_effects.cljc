@@ -5,11 +5,20 @@
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
-(defn turn-off!
+(defn disable-validator!
   ; @description
   ; Turns off the validator.
   ;
   ; @usage
   ; (turn-off!)
   []
-  (reset! state/TURNED-OFF? true))
+  (reset! state/ENABLED? false))
+
+(defn enable-validator!
+  ; @description
+  ; Turns on the validator.
+  ;
+  ; @usage
+  ; (turn-off!)
+  []
+  (reset! state/ENABLED? true))

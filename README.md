@@ -3,8 +3,7 @@
 
 ### Overview
 
-The <strong>cljc-validator</strong> is a simple Clojure/ClojureScript tool that
-helps you to check and validate every kind of data in your application.
+The <strong>cljc-validator</strong> is a simple data validator library for Clojure projects.
 
 ### deps.edn
 

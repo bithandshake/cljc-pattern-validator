@@ -94,7 +94,7 @@
   ;
   ; @usage
   ; (valid? {:a "a"}
-  ;         {:allowed* [:a :b] :e* "Value can contain only key :a and key :b!"}
+  ;         {:allowed* [:a :b] :e* "Value cannot contain keys other than key :a or key :b!"}
   ; =>
   ; true
   ;
@@ -126,7 +126,7 @@
                                :cljs (throw (js/Error.  (do (println (asm> x test t)) (str test))))))
 
            ; Returns TRUE if the validator has been turned off.
-           (off? [] @state/TURNED-OFF?)
+           (dis? [] (-> state/ENABLED? deref not))
 
            ; Returns TRUE if the given test must be ignored.
            (ign? [_ test]
@@ -233,7 +233,7 @@
            ; Returns TRUE if the given value is valid.
            (vld? [x test]
                  (chk? test {:type* map? :e* :test-must-be-map})
-                 (cond (off?)        :validation-turned-off
+                 (cond (dis?)        :validation-turned-off
                        (ign? x test) :skip-validation
                        (opt? x test) :nil-value-but-optional
                        (rep? x test) :nil-value-but-replaced
