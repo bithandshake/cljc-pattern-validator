@@ -106,7 +106,7 @@
   ;
   ; @return (boolean)
   ([data test]
-   (valid? n test {}))
+   (valid? data test {}))
 
   ([data test {:keys [explain? prefix] :or {explain? true}}]
    (letfn [; If the given 'test' value ...
@@ -138,7 +138,7 @@
 
            ; Returns TRUE if the given value is NIL, but replaced with another key in the given data.
            (rep? [x test]
-                 (and (:rep* test) (nil? x) (rep* n (:rep* test))))
+                 (and (:rep* test) (nil? x) (rep* data (:rep* test))))
 
            ; Type-checks the given value. Throws an error if fails.
            (chk? [x test]
