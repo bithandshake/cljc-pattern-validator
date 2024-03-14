@@ -1,24 +1,24 @@
 
 (ns validator.side-effects
-    (:require [validator.state :as state]))
+    (:require [common-state.api :as common-state]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
 (defn disable-validator!
   ; @description
-  ; Turns off the validator.
+  ; Disables the validator, causing every test to pass.
   ;
   ; @usage
   ; (disable-validator!)
   []
-  (reset! state/ENABLED? false))
+  (common-state/assoc-state! :validator :disabled? true))
 
 (defn enable-validator!
   ; @description
-  ; Turns on the validator.
+  ; Re-enables the validator.
   ;
   ; @usage
   ; (enable-validator!)
   []
-  (reset! state/ENABLED? true))
+  (common-state/dissoc-state! :validator :disabled?))

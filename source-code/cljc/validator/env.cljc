@@ -1,20 +1,21 @@
 
-(ns validator.reg
+(ns validator.env
     (:require [common-state.api :as common-state]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
-(defn reg-test!
+(defn get-test
   ; @description
-  ; Registers a reusable test.
+  ; Returns a specific test.
   ;
   ; @param (keyword) test-id
-  ; @param (map) test
   ;
   ; @usage
-  ; (reg-test! :my-test {:f* string? :e* "Value must be a string!"})
+  ; (get-test :my-test)
+  ; =>
+  ; {:f* string? :e* "Value must be a string!"}
   ;
   ; @return (map)
-  [test-id test]
-  (common-state/assoc-state! :validator :tests test-id test))
+  [test-id]
+  (common-state/get-state :validator :tests test-id))

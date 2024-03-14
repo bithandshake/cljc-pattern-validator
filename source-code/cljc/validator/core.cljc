@@ -1,6 +1,6 @@
 
 (ns validator.core
-    (:require [validator.state :as state]))
+    (:require [validator.env :as env]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -95,7 +95,7 @@
    (letfn [; If the given 'test' value ...
            ; ... is a map, returns it.
            ; ... is a keyword (ID of a registered test), returns the registered test.
-           (tst [test] (cond (map? test) test (keyword? test) (get @state/TESTS test)))
+           (tst [test] (cond (map? test) test (keyword? test) (env/get-test test)))
 
            ; Assembles the error message.
            (asm> [x test t] (str "\n\nvalidation failed at test:\n"  (if (nil? test) "NIL" test)

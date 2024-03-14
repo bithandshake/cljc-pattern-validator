@@ -1,6 +1,7 @@
 
 (ns validator.api
     (:require [validator.core         :as core]
+              [validator.env          :as env]
               [validator.reg          :as reg]
               [validator.side-effects :as side-effects]))
 
@@ -9,7 +10,7 @@
 
 ; @tutorial Tests
 ;
-; @title As map
+; @title As a map
 ; ;; A test can be provided as a map that defines a set of functions for testing data.
 ; (def MY-TEST
 ;      {:allowed* (vector)(opt)           ;; <- Defines the allowed keys of the data (for map type data).
@@ -27,7 +28,7 @@
 ;       :my-custom-key (map)(opt)         ;; <- Test functions under custom keys are applied on the corresponding value (for map type data).
 ;        {:rep* (vector)(opt)}})          ;; <- Vector of keys that could replace a specific key (if missing or NIL) in the data.
 ;
-; @title As keyword
+; @title As a keyword
 ; ;; A test can be provided as a keyword, that identifies a registered reusable test.
 ; (reg-test! :my-test MY-TEST)
 
@@ -45,6 +46,9 @@
 ; @redirect (validator.core/*)
 (def valid?   core/valid?)
 (def invalid? core/invalid?)
+
+; @redirect (validator.env/*)
+(def get-test env/get-test)
 
 ; @redirect (validator.reg/*)
 (def reg-test! reg/reg-test!)

@@ -3,18 +3,18 @@
 
 ### Overview
 
-The <strong>cljc-validator</strong> is a simple data validator library for Clojure projects.
+The <strong>cljc-validator</strong> is a simple data validator for Clojure projects.
 
 ### deps.edn
 
 ```
-{:deps {bithandshake/cljc-validator {:git/url "https://github.com/bithandshake/cljc-validator"
+{:deps {mt-utilities/cljc-validator {:git/url "https://github.com/mt-utilities/cljc-validator"
                                      :sha     "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}}}
 ```
 
 ### Current version
 
-Check out the latest commit on the [release branch](https://github.com/bithandshake/cljc-validator/tree/release).
+Check out the latest commit on the [release branch](https://github.com/mt-utilities/cljc-validator/tree/release).
 
 ### Changelog
 
@@ -22,4 +22,4 @@ You can track the changes of the <strong>cljc-validator</strong> library [here](
 
 # Documentation
 
-The <strong>cljc-validator</strong> functional documentation is [available here](https://bithandshake.github.io/cljc-validator).
+The <strong>cljc-validator</strong> functional documentation is [available here](https://mt-utilities.github.io/cljc-validator).
