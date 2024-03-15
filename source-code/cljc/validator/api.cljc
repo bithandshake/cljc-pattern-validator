@@ -48,7 +48,8 @@
 (def invalid? core/invalid?)
 
 ; @redirect (validator.env/*)
-(def get-test env/get-test)
+(def get-test  env/get-test)
+(def disabled? env/disabled?)
 
 ; @redirect (validator.reg/*)
 (def reg-test! reg/reg-test!)

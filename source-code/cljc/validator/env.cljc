@@ -19,3 +19,19 @@
   ; @return (map)
   [test-id]
   (common-state/get-state :validator :tests test-id))
+
+;; ----------------------------------------------------------------------------
+;; ----------------------------------------------------------------------------
+
+(defn disabled?
+  ; @description
+  ; Returns TRUE if the validator is disabled.
+  ;
+  ; @usage
+  ; (disabled?)
+  ; =>
+  ; true
+  ;
+  ; @return (boolean)
+  []
+  (common-state/get-state :validator :disabled?))

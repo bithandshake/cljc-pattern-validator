@@ -109,7 +109,7 @@
                                :cljs (throw (js/Error.  (do (println (asm> x test t)) (str test))))))
 
            ; Returns TRUE if the validator has been turned off.
-           (dis? [] (-> state/ENABLED? deref not))
+           (dis? [] (env/disabled?))
 
            ; Returns TRUE if the given test must be ignored.
            (ign? [_ test]
