@@ -23,12 +23,12 @@
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
-(defn disabled?
+(defn validator-disabled?
   ; @description
   ; Returns TRUE if the validator is disabled.
   ;
   ; @usage
-  ; (disabled?)
+  ; (validator-disabled?)
   ; =>
   ; true
   ;

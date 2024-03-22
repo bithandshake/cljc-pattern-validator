@@ -41,43 +41,43 @@
   ; @usage
   ; (valid? {:a "A"}
   ;         {:f* map? :e* "Value must be a map!"}
-  ;          :a {:f* string? :not* empty? :e* "Key :a must be a nonempty string!"})
+  ;          :a {:f* string? :not* empty? :e* "Key ':a' must be a nonempty string!"})
   ; =>
   ; true
   ;
   ; @usage
   ; (valid? {:a "A"}
-  ;         {:a {:or* [keyword? string?] :e* "Key :a must be a keyword or a string!"}})
+  ;         {:a {:or* [keyword? string?] :e* "Key ':a' must be a keyword or a string!"}})
   ; =>
   ; true
   ;
   ; @usage
   ; (valid? {:a ""}
-  ;         {:a {:and* [string? empty?] :e* "Key :a must be an empty string!"}})
+  ;         {:a {:and* [string? empty?] :e* "Key ':a' must be an empty string!"}})
   ; =>
   ; true
   ;
   ; @usage
   ; (valid? {:b "B"}
-  ;         {:a {:rep* [:b] :e* "Value must contain at least one of key :a or key :b!"}})
+  ;         {:a {:rep* [:b] :e* "Value must contain at least one of key ':a' or key ':b'!"}})
   ; =>
   ; true
   ;
   ; @usage
   ; (valid? {}
-  ;         {:a {:rep* [:b] :e* "Value must contain at least one of key :a or key :b!"}})
+  ;         {:a {:rep* [:b] :e* "Value must contain at least one of key ':a' or key ':b'!"}})
   ; =>
   ; false
   ;
   ; @usage
   ; (valid? {:a "a"}
-  ;         {:required* [:a :b] :e* "Value must contain key :a and key :b!"}
+  ;         {:required* [:a :b] :e* "Value must contain key ':a' and key ':b'!"}
   ; =>
   ; false
   ;
   ; @usage
   ; (valid? {:a "a"}
-  ;         {:allowed* [:a :b] :e* "Value cannot contain keys other than key :a or key :b!"}
+  ;         {:allowed* [:a :b] :e* "Value cannot contain keys other than key ':a' or key ':b'!"}
   ; =>
   ; true
   ;
@@ -109,7 +109,7 @@
                                :cljs (throw (js/Error.  (do (println (asm> x test t)) (str test))))))
 
            ; Returns TRUE if the validator has been turned off.
-           (dis? [] (env/disabled?))
+           (dis? [] (env/validator-disabled?))
 
            ; Returns TRUE if the given test must be ignored.
            (ign? [_ test]
@@ -119,7 +119,7 @@
            (opt? [x test]
                  (and (:opt* test) (nil? x)))
 
-           ; Returns TRUE if the given value is NIL, but replaced with another key in the given data.
+           ; Returns TRUE if the given value is NIL, but replaced with another key within the given data.
            (rep? [x test]
                  (and (:rep* test) (nil? x) (rep* data (:rep* test))))
 
@@ -127,67 +127,67 @@
            (chk? [x test]
                  (or ((:type* test) x) (err> x test :type*)))
 
-           ; Returns TRUE if the given value passes the given rep* test
+           ; Returns TRUE if the given value passes the given 'rep*' test
            ; (i.e., the given value contains any key from the given 'rep*' vector).
            (rep* [x rep*]
-                 (chk? rep* {:type* vector?  :e* :rep*-must-be-vector})
-                 (chk? x    {:type* seqable? :e* :unable-check-replacement-key/non-seqable-data})
+                 (chk? rep* {:type* vector?  :e* :rep*-must-be-a-vector})
+                 (chk? x    {:type* seqable? :e* :unable-to-check-replacement-key/non-seqable-data})
                  (some #(get x %) rep*))
 
-           ; Returns TRUE if the given value passes the given awd* test
+           ; Returns TRUE if the given value passes the given 'awd*' test
            ; (i.e., the given value contains keys only from the given 'awd*' vector).
            (awd* [x awd*]
-                 (chk? awd* {:type* vector?  :e* :allowed*-must-be-vector})
-                 (chk? x    {:type* seqable? :e* :unable-check-allowed-key/non-seqable-data})
+                 (chk? awd* {:type* vector?  :e* :allowed*-must-be-a-vector})
+                 (chk? x    {:type* seqable? :e* :unable-to-check-allowed-key/non-seqable-data})
                  (-> awd* set (remove (keys x)) empty?))
 
-           ; Returns TRUE if the given value passes the given rqd* test
+           ; Returns TRUE if the given value passes the given 'rqd*' test
            ; (i.e., the given value contains all keys from the given 'rqd*' vector).
            (rqd* [x rqd*]
-                 (chk? rqd* {:type* vector?  :e* :required*-must-be-vector})
-                 (chk? x    {:type* seqable? :e* :unable-check-required-keys/non-seqable-data})
+                 (chk? rqd* {:type* vector?  :e* :required*-must-be-a-vector})
+                 (chk? x    {:type* seqable? :e* :unable-to-check-required-keys/non-seqable-data})
                  (-> x keys set (remove rqd*) empty?))
 
-           ; Returns TRUE if the given value passes the given and* test
+           ; Returns TRUE if the given value passes the given 'and*' test
            ; (i.e., all function in the given 'and*' vector returns TRUE).
            (and* [x and*]
-                 (chk? and* {:type* vector? :e* :and*-must-be-vector})
+                 (chk? and* {:type* vector? :e* :and*-must-be-a-vector})
                  (or (every? #(f* x %) and*)))
 
-           ; Returns TRUE if the given value passes the given f* test
+           ; Returns TRUE if the given value passes the given 'f*' test
            ; (i.e., the given 'f*' function returns TRUE).
            (f* [x f*]
-               (chk? f* {:type* ifn? :e* :f*-must-be-function})
+               (chk? f* {:type* ifn? :e* :f*-must-be-a-function})
                (f* x))
 
-           ; Returns TRUE if the given value passes the given nand* test
+           ; Returns TRUE if the given value passes the given 'nand*' test
            ; (i.e., at least one function in the given 'nand*' vector returns FALSE).
            (nand* [x nand*]
-                  (chk? nand* {:type* vector? :e* :nand*-must-be-vector})
+                  (chk? nand* {:type* vector? :e* :nand*-must-be-a-vector})
                   (some #(not* x %) nand*))
 
-           ; Returns TRUE if the given value passes the given nor* test
+           ; Returns TRUE if the given value passes the given 'nor*' test
            ; (i.e., all function in the given 'nor*' vector returns FALSE).
            (nor* [x nor*]
-                 (chk? nor* {:type* vector? :e* :nor*-must-be-vector})
+                 (chk? nor* {:type* vector? :e* :nor*-must-be-a-vector})
                  (every? #(not* x %) nor*))
 
-           ; Returns TRUE if the given value passes the given not* test
+           ; Returns TRUE if the given value passes the given 'not*' test
            ; (i.e., the given 'not*' function returns TRUE).
            (not* [x not*]
-                 (chk? not* {:type* ifn? :e* :not*-must-be-function})
+                 (chk? not* {:type* ifn? :e* :not*-must-be-a-function})
                  (-> x not* not))
 
-           ; Returns TRUE if the given value passes the given or* test
+           ; Returns TRUE if the given value passes the given 'or*' test
            ; (i.e., at least one function in the given 'or*' vector returns TRUE).
            (or* [x or*]
-                (chk? or* {:type* vector? :e* :or*-must-be-vector})
+                (chk? or* {:type* vector? :e* :or*-must-be-a-vector})
                 (some #(f* x %) or*))
 
-           ; Returns TRUE if the given value passes the given xor* test
+           ; Returns TRUE if the given value passes the given 'xor*' test
            ; (i.e., at most one function in the given 'xor*' vector returns TRUE).
            (xor* [x xor*]
-                 (chk? xor* {:type* vector? :e* :xor*-must-be-vector})
+                 (chk? xor* {:type* vector? :e* :xor*-must-be-a-vector})
                  (loop [? false [% :as xor*] xor*]
                        (cond (-> xor* count zero?) true
                              (f* x %) (if ? false (recur true (drop xor*))))))
@@ -206,7 +206,7 @@
                          :xor*      (xor*  x t)
                          :allowed*  (awd*  x t)
                          :required* (rqd*  x t)
-                                    (vld? (get x k) (tst t)))) ; <- Recursive test for a custom key.
+                                    (vld? (get x k) (tst t)))) ; <- Any custom key of test (for testing nested values).
 
            ; Returns TRUE if the given value passes all stages from the given test.
            (vld> [x {:keys [e*] :as test}]
@@ -215,12 +215,12 @@
 
            ; Returns TRUE if the given value is valid.
            (vld? [x test]
-                 (chk? test {:type* map? :e* :test-must-be-map})
-                 (cond (dis?)        :validation-turned-off
-                       (ign? x test) :skip-validation
-                       (opt? x test) :nil-value-but-optional
-                       (rep? x test) :nil-value-but-replaced
-                       :validation (vld> x test)))]
+                 (chk? test {:type* map? :e* :test-must-be-a-map})
+                 (cond (dis?)        :validation-is-turned-off
+                       (ign? x test) :ignoring-validation
+                       (opt? x test) :value-is-nil-but-optional
+                       (rep? x test) :value-is-nil-but-replaced
+                       :validating-data (vld> x test)))]
 
           ; ...
           #?(:clj  (boolean (try (vld? data (tst test)) (catch Exception e (if explain? (-> e         println)))))
