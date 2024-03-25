@@ -10,23 +10,24 @@
   ; Returns TRUE if the given data passes the given test.
   ;
   ; @param (*) data
-  ; @param (keyword or map) test
-  ; {:allowed* (vector)(opt)
-  ;  :and* (functions in vector)(opt)
-  ;  :e* (string)
-  ;  :f* (function)(opt)
-  ;  :ign* (boolean)(opt)
-  ;  :nand* (functions in vector)(opt)
-  ;  :nor* (functions in vector)(opt)
-  ;  :not* (function)(opt)
-  ;  :opt* (boolean)(opt)
-  ;  :or* (functions in vector)(opt)
-  ;  :required* (vector)(opt)
-  ;  :xor* (functions in vector)(opt)
-  ;  :my-custom-key (map)(opt)
-  ;   {:rep* (vector)(opt)
-  ;    ...}
-  ;  ...}
+  ; @param (keywords and/or maps in vector) tests
+  ; [(keyword or map) test
+  ;    {:allowed* (vector)(opt)
+  ;     :and* (functions in vector)(opt)
+  ;     :e* (string)
+  ;     :f* (function)(opt)
+  ;     :ign* (boolean)(opt)
+  ;     :nand* (functions in vector)(opt)
+  ;     :nor* (functions in vector)(opt)
+  ;     :not* (function)(opt)
+  ;     :opt* (boolean)(opt)
+  ;     :or* (functions in vector)(opt)
+  ;     :required* (vector)(opt)
+  ;     :xor* (functions in vector)(opt)
+  ;     :my-custom-key (map)(opt)
+  ;      {:rep* (vector)(opt)
+  ;       ...}
+  ;     ...}]
   ; @param (map)(opt) options
   ; {:explain? (boolean)(opt)
   ;   Default: true
@@ -34,64 +35,64 @@
   ;
   ; @usage
   ; (valid? "abc"
-  ;         {:f* string? :e* "Value must be a string!"})
+  ;         [{:f* string? :e* "Value must be a string!"}])
   ; =>
   ; true
   ;
   ; @usage
   ; (valid? {:a "A"}
-  ;         {:f* map? :e* "Value must be a map!"}
-  ;          :a {:f* string? :not* empty? :e* "Key ':a' must be a nonempty string!"})
+  ;         [{:f* map? :e* "Value must be a map!"}
+  ;           :a {:f* string? :not* empty? :e* "Key ':a' must be a nonempty string!"}])
   ; =>
   ; true
   ;
   ; @usage
   ; (valid? {:a "A"}
-  ;         {:a {:or* [keyword? string?] :e* "Key ':a' must be a keyword or a string!"}})
+  ;         [{:a {:or* [keyword? string?] :e* "Key ':a' must be a keyword or a string!"}}])
   ; =>
   ; true
   ;
   ; @usage
   ; (valid? {:a ""}
-  ;         {:a {:and* [string? empty?] :e* "Key ':a' must be an empty string!"}})
+  ;         [{:a {:and* [string? empty?] :e* "Key ':a' must be an empty string!"}}])
   ; =>
   ; true
   ;
   ; @usage
   ; (valid? {:b "B"}
-  ;         {:a {:rep* [:b] :e* "Value must contain at least one of key ':a' or key ':b'!"}})
+  ;         [{:a {:rep* [:b] :e* "Value must contain at least one of key ':a' or key ':b'!"}}])
   ; =>
   ; true
   ;
   ; @usage
   ; (valid? {}
-  ;         {:a {:rep* [:b] :e* "Value must contain at least one of key ':a' or key ':b'!"}})
+  ;         [{:a {:rep* [:b] :e* "Value must contain at least one of key ':a' or key ':b'!"}}])
   ; =>
   ; false
   ;
   ; @usage
   ; (valid? {:a "a"}
-  ;         {:required* [:a :b] :e* "Value must contain key ':a' and key ':b'!"}
+  ;         [{:required* [:a :b] :e* "Value must contain key ':a' and key ':b'!"}])
   ; =>
   ; false
   ;
   ; @usage
   ; (valid? {:a "a"}
-  ;         {:allowed* [:a :b] :e* "Value cannot contain keys other than key ':a' or key ':b'!"}
+  ;         [{:allowed* [:a :b] :e* "Value cannot contain keys other than key ':a' or key ':b'!"}])
   ; =>
   ; true
   ;
   ; @usage
   ; (reg-test! :my-test {:a {:f* string?}})
-  ; (valid? {:a "A"} :my-test)
+  ; (valid? {:a "A"} [:my-test])
   ; =>
   ; true
   ;
   ; @return (boolean)
-  ([data test]
-   (valid? data test {}))
+  ([data tests]
+   (valid? data tests {}))
 
-  ([data test {:keys [explain? prefix] :or {explain? true}}]
+  ([data tests {:keys [explain? prefix] :or {explain? true}}]
    (letfn [; If the given 'test' value ...
            ; ... is a map, returns it.
            ; ... is a keyword (ID of a registered test), returns the registered test.
@@ -215,47 +216,49 @@
 
            ; Returns TRUE if the given value is valid.
            (vld? [x test]
-                 (chk? test {:type* map? :e* :test-must-be-a-map})
-                 (cond (dis?)        :validation-is-turned-off
-                       (ign? x test) :ignoring-validation
-                       (opt? x test) :value-is-nil-but-optional
-                       (rep? x test) :value-is-nil-but-replaced
-                       :validating-data (vld> x test)))]
+                 (let [test (tst test)]
+                      (chk? test {:type* map? :e* :test-must-be-a-map})
+                      (cond (dis?)        :validation-is-turned-off
+                            (ign? x test) :ignoring-validation
+                            (opt? x test) :value-is-nil-but-optional
+                            (rep? x test) :value-is-nil-but-replaced
+                            :validating-data (vld> x test))))]
 
           ; ...
-          #?(:clj  (boolean (try (vld? data (tst test)) (catch Exception e (if explain? (-> e         println)))))
-             :cljs (boolean (try (vld? data (tst test)) (catch :default  e (if explain? (-> e .-stack println)))))))))
+          #?(:clj  (boolean (try (every? (fn [%] (vld? data %)) tests) (catch Exception e (if explain? (-> e         println)))))
+             :cljs (boolean (try (every? (fn [%] (vld? data %)) tests) (catch :default  e (if explain? (-> e .-stack println)))))))))
 
 (defn invalid?
   ; @description
   ; Returns TRUE if the given data fails the given test.
   ;
   ; @param (*) data
-  ; @param (keyword or map) test
-  ; {:allowed* (vector)(opt)
-  ;  :and* (functions in vector)(opt)
-  ;  :e* (string)
-  ;  :f* (function)(opt)
-  ;  :ign* (boolean)(opt)
-  ;  :nand* (functions in vector)(opt)
-  ;  :nor* (functions in vector)(opt)
-  ;  :not* (function)(opt)
-  ;  :opt* (boolean)(opt)
-  ;  :or* (functions in vector)(opt)
-  ;  :required* (vector)(opt)
-  ;  :xor* (functions in vector)(opt)
-  ;  :my-custom-key (map)(opt)
-  ;   {:rep* (vector)(opt)
-  ;    ...}
-  ;  ...}
+  ; @param (keywords and/or maps in vector) tests
+  ; [(keyword or map) test
+  ;    {:allowed* (vector)(opt)
+  ;     :and* (functions in vector)(opt)
+  ;     :e* (string)
+  ;     :f* (function)(opt)
+  ;     :ign* (boolean)(opt)
+  ;     :nand* (functions in vector)(opt)
+  ;     :nor* (functions in vector)(opt)
+  ;     :not* (function)(opt)
+  ;     :opt* (boolean)(opt)
+  ;     :or* (functions in vector)(opt)
+  ;     :required* (vector)(opt)
+  ;     :xor* (functions in vector)(opt)
+  ;     :my-custom-key (map)(opt)
+  ;      {:rep* (vector)(opt)
+  ;       ...}
+  ;     ...}]
   ; @param (map)(opt) options
   ; {:explain? (boolean)(opt)
   ;   Default: true
   ;  :prefix (string)(opt)}
   ;
   ; @return (boolean)
-  ([data test]
-   (invalid? data test {}))
+  ([data tests]
+   (invalid? data tests {}))
 
-  ([data test options]
-   (-> data (valid? test options) not)))
+  ([data tests options]
+   (-> data (valid? tests options) not)))
