@@ -99,7 +99,7 @@
            (tst [test] (cond (map? test) test (keyword? test) (env/get-test test)))
 
            ; Assembles the error message.
-           (asm> [x test t] (str "\n\nvalidation failed at test:\n"  (if (nil? test) "NIL" test)
+           (asm> [x test t] (str "\n\nvalidation failed on test:\n"  (if (nil? test) "NIL" test)
                                  "\n\nvalidation failed at stage:\n" (if (nil? t)    "NIL" t)
                                  "\n\nvalidation failed on value:\n" (if (nil? x)    "NIL" x)
                                  "\n\nvalidation failed on data:\n"  (if (nil? data) "NIL" data)
@@ -132,21 +132,21 @@
            ; (i.e., the given value contains any key from the given 'rep*' vector).
            (rep* [x rep*]
                  (chk? rep* {:type* vector?  :e* :rep*-must-be-a-vector})
-                 (chk? x    {:type* seqable? :e* :unable-to-check-replacement-key/non-seqable-data})
+                 (chk? x    {:type* seqable? :e* :unable-to-check-replacement-key/non-seqable-data-has-been-provided})
                  (some #(get x %) rep*))
 
            ; Returns TRUE if the given value passes the given 'awd*' test
            ; (i.e., the given value contains keys only from the given 'awd*' vector).
            (awd* [x awd*]
                  (chk? awd* {:type* vector?  :e* :allowed*-must-be-a-vector})
-                 (chk? x    {:type* seqable? :e* :unable-to-check-allowed-key/non-seqable-data})
+                 (chk? x    {:type* seqable? :e* :unable-to-check-allowed-key/non-seqable-data-has-been-provided})
                  (-> awd* set (remove (keys x)) empty?))
 
            ; Returns TRUE if the given value passes the given 'rqd*' test
            ; (i.e., the given value contains all keys from the given 'rqd*' vector).
            (rqd* [x rqd*]
                  (chk? rqd* {:type* vector?  :e* :required*-must-be-a-vector})
-                 (chk? x    {:type* seqable? :e* :unable-to-check-required-keys/non-seqable-data})
+                 (chk? x    {:type* seqable? :e* :unable-to-check-required-keys/non-seqable-data-has-been-provided})
                  (-> x keys set (remove rqd*) empty?))
 
            ; Returns TRUE if the given value passes the given 'and*' test
