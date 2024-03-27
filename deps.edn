@@ -1,6 +1,6 @@
 
 {:paths ["source-code/cljc"]
  :deps  {mt-app-kit/cljc-common-state {:git/url "https://github.com/mt-app-kit/cljc-common-state"
-                                       :sha     "6bd433aede4cb7779830f48ef3ce933a34ee4daa"}
+                                       :sha     "fa375f01fac2159b95d09712fe8a1e1dc2eeeeb5"}
          org.clojure/clojure          {:mvn/version "1.10.1"}
          org.clojure/clojurescript    {:mvn/version "1.10.891"}}}
